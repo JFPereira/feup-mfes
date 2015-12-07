@@ -1,0 +1,17 @@
+class GameTests is subclass of MyTestCase
+
+operations  
+
+	public testCodeMakerPlayer: () ==> ()
+	testCodeMakerPlayer() == (
+		dcl codeMaker: CodeMakerPlayer := new CodeMakerPlayer(['1', '2', '3', '4']);
+		assertEqual(['1', '2', '6', '4'], codeMaker.GetFinalKey());
+	);
+
+  public testGame: () ==> ()
+  testGame() == (
+  	dcl g: Game := new Game();
+  	assertEqual(10, g.GetCurrentMoves());
+  );
+  
+end GameTests

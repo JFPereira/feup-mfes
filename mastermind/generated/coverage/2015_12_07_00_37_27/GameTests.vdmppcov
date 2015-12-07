@@ -1,0 +1,11 @@
+class GameTests is subclass of MyTestCase
+
+operations  
+
+  public testGame: () ==> ()
+  testGame() == (
+  	dcl g: Game := new Game();
+  	assertEqual(11, g.GetCurrentMoves());
+  );
+  
+end GameTests
