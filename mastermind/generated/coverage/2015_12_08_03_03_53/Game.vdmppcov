@@ -12,7 +12,7 @@ class Game
         operations
         -- TODO Define operations here
         -- constructor, initializes the game
-				public Game: CodeMakerPlayer * CodeBreakerPlayer ==> Game
+				public Game: (CodeMakerPlayer, CodeBreakerPlayer) ==> Game
 					Game(codeMakerPlayer, codeBreakerPlayer) == (
 						codeMaker := codeMakerPlayer;
 						codeBreaker := codeBreakerPlayer;

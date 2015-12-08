@@ -6,16 +6,14 @@ class Game
 				
         instance variables
         private moves : nat := 10;
-        public codeMaker: CodeMakerPlayer := new CodeMakerPlayer();
-        public codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
+        public codeMaker: CodeMakerPlayer := new CodeMakerPlayer();      
                 
         operations
         -- TODO Define operations here
         -- constructor, initializes the game
-				public Game: CodeMakerPlayer * CodeBreakerPlayer ==> Game
-					Game(codeMakerPlayer, codeBreakerPlayer) == (
+				public Game: (CodeMakerPlayer) ==> Game
+					Game(codeMakerPlayer) == (
 						codeMaker := codeMakerPlayer;
-						codeBreaker := codeBreakerPlayer;
 						return self
 					);
 					

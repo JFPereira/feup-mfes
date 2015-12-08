@@ -28,7 +28,7 @@ operations
 		AddFinalKey (key) == (
 			finalKey := key;
 		)
-	pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7);
+	pre len key < 5 and forall x in set elems key & (x > 0 and x < 7);
 	
 functions
 -- TODO Define functiones here

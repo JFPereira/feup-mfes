@@ -4,8 +4,7 @@ operations
 
 	public testCodeMakerPlayer: () ==> ()
 	testCodeMakerPlayer() == (
-		dcl codeMaker: CodeMakerPlayer := new CodeMakerPlayer();
-		codeMaker.AddFinalKey([1, 2, 3, 4]);
+		dcl codeMaker: CodeMakerPlayer := new CodeMakerPlayer([1, 2, 3, 4]);
 		assertEqual([1, 2, 3, 4], codeMaker.GetFinalKey());
 	);
 	
@@ -19,10 +18,10 @@ operations
   testGame() == (
   	(
   		dcl codeMaker: CodeMakerPlayer := new CodeMakerPlayer();
-  		codeMaker.AddFinalKey([1, 2, 3, 4]);
+  		codeMaker.AddFinalKey([1, 2, 3, 4]);	
   		(
   			dcl codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
-  			codeBreaker.AddKey([1, 2, 3, 4]);
+  			codeMaker.AddFinalKey([1, 2, 3, 4]);
   			(
   				dcl g: Game := new Game(codeMaker, codeBreaker);
   				assertEqual(10, g.GetCurrentMoves());

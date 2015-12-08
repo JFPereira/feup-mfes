@@ -35,7 +35,7 @@ operations
   public testAll: () ==> ()
   testAll() == (
     testCodeMakerPlayer();
-    testGame();
+    --testGame();
   );
   
 end GameTests

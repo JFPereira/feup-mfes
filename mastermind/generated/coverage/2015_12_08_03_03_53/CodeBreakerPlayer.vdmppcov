@@ -13,32 +13,19 @@ instance variables
 	
 operations
 -- TODO Define operations here
-	public CodeBreakerPlayer: () ==> CodeBreakerPlayer
-  	CodeBreakerPlayer() == (
-  		return self
-  	);
-  	
-  public CodeBreakerPlayer: (Key) ==> CodeBreakerPlayer
+	public CodeBreakerPlayer: Key ==> CodeBreakerPlayer
   	CodeBreakerPlayer(key) == (
   		currentKey := key;
   		AddKey(key);
   		return self
   	)
-  pre len key < 5 and forall x in set elems key & (x > 0 and x < 7)
-	post len allKeys = len allKeys~ + 1;
-  
-  public GetCurrentKey: () ==> Key
-  	GetCurrentKey () == (
-  		return currentKey;
-  	)
-  	pre len currentKey > 0;
+  pre len key < 5 and forall x in set elems key & (x > 0 and x < 7);
   
   public AddKey : Key ==> ()
 		AddKey (key) == (
 			allKeys := allKeys^[key];
 		)
-	pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7)
-	post len allKeys = len allKeys~ + 1;
+	post len allKeys = len allKeys~ + 1
 		
 functions
 -- TODO Define functiones here

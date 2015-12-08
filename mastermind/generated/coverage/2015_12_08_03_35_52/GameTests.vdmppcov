@@ -22,7 +22,7 @@ operations
   		codeMaker.AddFinalKey([1, 2, 3, 4]);
   		(
   			dcl codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
-  			codeBreaker.AddKey([1, 2, 3, 4]);
+  			codeBreaker.AddKey([]);
   			(
   				dcl g: Game := new Game(codeMaker, codeBreaker);
   				assertEqual(10, g.GetCurrentMoves());
