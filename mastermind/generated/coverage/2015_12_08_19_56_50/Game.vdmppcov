@@ -71,7 +71,6 @@ class Game
 							codeBreaker.AddKey(key);
 							if CheckMove()
 								then (
-									IO`println(results);
 									moves := 0;
 									IO`println("You win the game.");
 									IO`print("The key was ");
