@@ -8,7 +8,6 @@ class Game
         private moves : nat := 10;
         public codeMaker: CodeMakerPlayer := new CodeMakerPlayer();
         public codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
-        public results : seq of CodeBreakerPlayer`Key := [];
                 
         operations
         -- TODO Define operations here
@@ -32,11 +31,12 @@ class Game
 				public MakeMove : (CodeBreakerPlayer`Key) ==> ()
 					MakeMove (key) == (
 					if moves > 0
-						then (
-							codeBreaker.AddKey(key);
-							IO`println(codeBreaker.GetCurrentKey());
-							moves := moves - 1;
-						)
+						then (codeBreaker.AddKey(key);
+						
+						IO`print(codeBreaker.GetCurrentKey());
+						
+						moves := moves - 1;
+					)
 					else (
 						IO`println("You lost the game.");
 						IO`print("The key was ");

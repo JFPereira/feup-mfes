@@ -22,16 +22,7 @@ operations
   		dcl g: Game := new Game(codeMaker, codeBreaker);
   		assertEqual(10, g.GetCurrentMoves());
   		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
-  		g.MakeMove([1, 3, 3, 4]);
+  		assertEqual([1, 3, 3, 4], g.codeBreaker.GetCurrentKey());
   );
   
   public testAll: () ==> ()
