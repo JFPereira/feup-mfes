@@ -1,15 +1,20 @@
 class Game
 				types
-					public Result = seq of int;
+					public Result = seq of nat
+					inv r == len r = 2 and r(1) + r(2) <= 4;
 				values
 				-- TODO Define values here
 				
         instance variables
         private moves : nat := 10;
-        public codeMaker: CodeMakerPlayer := new CodeMakerPlayer();
-        public codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
+        public codeMaker: CodeMakerPlayer;
+        public codeBreaker: CodeBreakerPlayer;
         public results : seq of Result := [];
         public finished : bool := false;
+        
+        inv len results <= moves;
+        inv finished <=> len results > 0 and results(len results) = [4, 0];
+        inv forall i in set inds results \ {len results} & results(i) <> [4, 0];
                 
         operations
         -- TODO Define operations here
@@ -29,9 +34,8 @@ class Game
 				public GetFinalKey : () ==> seq of int
 					GetFinalKey () == return codeMaker.GetFinalKey();
 					
-					public CheckMove : () ==> bool
+					public CheckMove : () ==> ()
 					CheckMove () == (
-						dcl result : Result := [];
 						dcl e_corrects : nat := 0;
 						dcl e_exists : nat := 0;
 						dcl makerElemRep : nat := 0;
@@ -54,14 +58,10 @@ class Game
 						
 						e_exists := sumMins - e_corrects;
 						
-						result := [e_corrects, e_exists]^result;
-						results := results^[result];
-						
-						if e_corrects = 4
-							then
-								return true;
-						
-						return false;	
+						atomic (
+							results := results^[[e_corrects, e_exists]];
+							finished := e_corrects = 4
+						);	
 					);
 					
 				-- print board
@@ -93,7 +93,7 @@ class Game
 								then (
 									moves := moves - 1;
 									codeBreaker.AddKey(key);
-									finished := CheckMove();
+									CheckMove();
 									
 									PrintBoard(codeBreaker.GetAllKeys(), results);
 									

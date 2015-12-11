@@ -22,10 +22,10 @@ operations
   		dcl g: Game := new Game(codeMaker, codeBreaker);
   		assertEqual(10, g.GetCurrentMoves());
   		g.MakeMove([1, 1, 2, 2]);
+  		-- assertEqual([1, 0], g.results(1));
   		g.MakeMove([3, 3, 4, 4]);
   		g.MakeMove([5, 5, 6, 6]);
   		g.MakeMove([5, 6, 5, 2]);
-  		g.MakeMove([6, 5, 6, 2]);
   		g.MakeMove([6, 6, 5, 2]);
   );
   
