@@ -1,0 +1,107 @@
+class Game
+				types
+					public Result = seq of int;
+				values
+				-- TODO Define values here
+				
+        instance variables
+        private moves : nat := 10;
+        public codeMaker: CodeMakerPlayer := new CodeMakerPlayer();
+        public codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
+        public results : seq of Result := [];
+        public endGame : bool := false;
+                
+        operations
+        -- TODO Define operations here
+        -- constructor, initializes the game
+				public Game: CodeMakerPlayer * CodeBreakerPlayer ==> Game
+					Game(codeMakerPlayer, codeBreakerPlayer) == (
+						codeMaker := codeMakerPlayer;
+						codeBreaker := codeBreakerPlayer;
+						return self
+					);
+					
+				-- get the current number of moves remaining
+				pure public GetCurrentMoves : () ==> nat
+					GetCurrentMoves () == return moves;
+				
+				-- get the code maker final key
+				public GetFinalKey : () ==> seq of int
+					GetFinalKey () == return codeMaker.GetFinalKey();
+					
+					public CheckMove : () ==> bool
+					CheckMove () == (
+						dcl result : Result := [];
+						dcl e_corrects : nat := 0;
+						dcl e_exists : nat := 0;
+						dcl makerElemRep : nat := 0;
+						dcl breakerElemRep : nat := 0;
+						dcl sumMins : nat := 0;
+						dcl breakerKey : CodeBreakerPlayer`Key := codeBreaker.GetCurrentKey();
+						dcl makerKey : CodeMakerPlayer`Key := codeMaker.GetFinalKey();
+					
+						for i = 1 to len codeBreaker.GetCurrentKey() by 1 do (
+								if breakerKey(i) = makerKey(i)
+									then
+										e_corrects := e_corrects + 1;
+						);
+						
+						for i = 1 to 6 by 1 do (
+							makerElemRep := Utils`Count(makerKey, i);
+							breakerElemRep := Utils`Count(breakerKey, i);
+							sumMins := sumMins + Utils`Min(makerElemRep, breakerElemRep);
+						);
+						
+						e_exists := sumMins - e_corrects;
+						
+						result := [e_corrects, e_exists]^result;
+						results := results^[result];
+						
+						if e_corrects = 4
+							then
+								return true;
+						
+						return false;	
+					);
+					
+				-- make a move
+				public MakeMove : (CodeBreakerPlayer`Key) ==> ()
+					MakeMove (key) == (
+					if moves > 0
+						then (
+							if not endGame
+								then (
+									codeBreaker.AddKey(key);
+									endGame := CheckMove();
+									
+									if endGame
+										then (
+											moves := 0;
+											IO`println("You win the game.");
+											IO`print("The key was ");
+											IO`print(codeBreaker.GetCurrentKey());
+											IO`print(" and your number of tries was ");
+											IO`print(len results);
+											IO`println(".");
+										);
+									
+									
+								)
+							else
+								IO`println("The game is over.");
+						)
+					elseif moves = 0 and not endGame 
+						then (
+							IO`println("You lost the game.");
+							IO`print("The key was ");
+							IO`print(GetFinalKey());
+							IO`println(".")
+						)
+				)
+				pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7);
+					
+        functions
+				-- TODO Define functiones here
+				traces
+				-- TODO Define Combinatorial Test Traces here
+end Game

@@ -1,0 +1,43 @@
+class GameTests is subclass of MyTestCase
+
+operations  
+
+	public testCodeMakerPlayer: () ==> ()
+	testCodeMakerPlayer() == (
+		dcl codeMaker: CodeMakerPlayer := new CodeMakerPlayer();
+		codeMaker.AddFinalKey([1, 2, 3, 4]);
+		assertEqual([1, 2, 3, 4], codeMaker.GetFinalKey());
+	);
+	
+	public testCodeBreakerPlayer: () ==> ()
+	testCodeBreakerPlayer() == (
+		dcl codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
+		assertEqual([1, 2, 3, 4], codeBreaker.GetCurrentKey());
+	);
+
+  public testGame: () ==> ()
+  testGame() == (
+  		dcl codeMaker: CodeMakerPlayer := new CodeMakerPlayer([1, 2, 3, 4]);
+  		dcl codeBreaker: CodeBreakerPlayer := new CodeBreakerPlayer();
+  		dcl g: Game := new Game(codeMaker, codeBreaker);
+  		assertEqual(10, g.GetCurrentMoves());
+  		g.MakeMove([1, 4, 2, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 2, 2, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 4, 3, 2]);
+  		g.MakeMove([1, 2, 3, 4]);
+  );
+  
+  public testAll: () ==> ()
+  testAll() == (
+    testCodeMakerPlayer();
+    testGame();
+  );
+  
+end GameTests

@@ -1,0 +1,35 @@
+class Utils
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+-- TODO Define instance variables here
+operations
+-- TODO Define operations here
+	public static Count: seq of int * nat1 ==> nat
+		Count(key, elem) == (
+			dcl count : nat := 0;
+		
+			for e in key do
+				if e = elem
+					then
+						count := count + 1;
+						
+			return count;
+		);
+		
+	public static Min: int * int ==> int
+		Min(a, b) == (
+			if a < b
+				then
+					return a;
+					
+			return b; 
+		);
+  	
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Utils
