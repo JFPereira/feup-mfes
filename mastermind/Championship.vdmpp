@@ -8,27 +8,40 @@ values
 instance variables
 -- TODO Define instance variables here
 	private numberOfGames : nat1;
+	private numberOfRounds : nat1;
 	private players : seq of Player;
+	private currentPlayersInChampionship : seq of Player;
 	private games : seq of Game;
-	
-	inv numberOfGames = len players - 2 or numberOfGames = len players - 1;
 	
 operations
 -- TODO Define operations here
 	public Championship : seq of Player ==> Championship
 		Championship (allPlayers) == (
-			numberOfGames := len allPlayers / 2;
+			numberOfGames := len allPlayers - 1;
+			
+			numberOfRounds := (MATH`log(len allPlayers) / MATH`log(2));
 	
 			players := allPlayers;
+			currentPlayersInChampionship := allPlayers;
 			games := [];
 			
 			return self;
 		)
 	pre len allPlayers > 1;
 
+	pure public GetNumberOfRounds : () ==> nat1
+		GetNumberOfRounds() == (
+			return numberOfRounds;
+		);
+
 	pure public GetPlayers : () ==> seq of Player
 		GetPlayers() == (
 			return players;
+		);
+		
+	pure public GetCurrentPlayersOnChampionship : () ==> seq of Player
+		GetCurrentPlayersOnChampionship() == (
+			return currentPlayersInChampionship;
 		);
 		
 	pure public GetGames : () ==> seq of Game
@@ -49,10 +62,10 @@ operations
 			for p in sequenceOfPlayers do (
 				if len selectedPlayers = 0
 					then
-						playerShuffled := MATH`rand(len players - 1) + 1
+						playerShuffled := MATH`rand(len sequenceOfPlayers) + 1
 				else (
 					while playerShuffled in set elems selectedPlayers and len selectedPlayers <> len sequenceOfPlayers do (
-						playerShuffled := MATH`rand(len players) + 1;
+						playerShuffled := MATH`rand(len sequenceOfPlayers) + 1;
 					);
 				);
 				
@@ -65,17 +78,28 @@ operations
 	public CreateGames : seq of Player ==> seq of Game
 		CreateGames(sequenceOfPlayers) == (
 			dcl playersOrder : seq of nat1 := ShufflePlayers(sequenceOfPlayers);
-			dcl generatedGames : seq of Game;
+			dcl generatedGames : seq of Game := [];
+			dcl game : Game;
 			
-			IO`print("NumberOfGames: ");
-			IO`println(numberOfGames);
-			
-			for i = 1 to len sequenceOfPlayers by 2 do (
-				generatedGames := generatedGames^[new Game(sequenceOfPlayers(playersOrder(i)), sequenceOfPlayers(playersOrder(i + 1)))]
+			for i = 1 to len sequenceOfPlayers / 2 by 1 do (
+				game := new Game(sequenceOfPlayers(playersOrder((i * 2) - 1)), sequenceOfPlayers(playersOrder(i * 2))); 
+				generatedGames := generatedGames^[game];
 			);
 			
 			return generatedGames;
 		);
+		
+	public PickAllWinnerPlayers : seq of Game ==> ()
+		PickAllWinnerPlayers(finishedGames) == (
+			dcl winnerPlayers : seq of Player := [];
+			
+			for i = 1 to len finishedGames by 1 do (
+				winnerPlayers := winnerPlayers^[finishedGames(i).GetWinnerPlayer()];
+			);
+			
+			currentPlayersInChampionship := winnerPlayers;
+		);
+		
 
 functions
 -- TODO Define functiones here

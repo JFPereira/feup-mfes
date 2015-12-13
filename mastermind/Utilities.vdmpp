@@ -1,4 +1,4 @@
-class Utils
+class Utilities
 types
 -- TODO Define types here
 values
@@ -32,4 +32,4 @@ functions
 -- TODO Define functiones here
 traces
 -- TODO Define Combinatorial Test Traces here
-end Utils
+end Utilities

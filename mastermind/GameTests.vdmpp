@@ -108,8 +108,27 @@ operations
   		IO`println(g.GetWinnerPlayer().GetName());
   	);
   
-  public testChampionshipWithEvenNumberOfPlayers : () ==> ()
-  	testChampionshipWithEvenNumberOfPlayers() == (
+  public testRandomlyGame : () ==> ()
+  	testRandomlyGame() == (
+  		dcl codeMaker: Player := new Player("CodeMaker", [1, 2, 4, 1]);
+  		dcl codeBreaker: Player := new Player("CodeBreaker");
+  		dcl g: Game := new Game(codeMaker, codeBreaker);
+  		
+  		-- the result of the game initial moves is 10
+  		assertEqual(10, g.GetCurrentMoves());
+  		
+  		-- play the game with randomly moves
+  		g.PlayRandomly();
+  		
+  		-- the game need to be finished
+  		assertEqual(true, g.IsFinished());
+  		
+  		IO`print("Winner is: ");
+  		IO`println(g.GetWinnerPlayer().GetName());
+  	);
+  
+  public testChampionshipWithFourPlayers : () ==> ()
+  	testChampionshipWithFourPlayers() == (
   		dcl p1 : Player := new Player("Tito");
   		dcl p2 : Player := new Player("Cristina");
   		dcl p3 : Player := new Player("Jacinto");
@@ -119,18 +138,50 @@ operations
   		dcl champ : Championship := new Championship([p1, p2, p3, p4]);
   		assertEqual(4, len champ.GetPlayers());
   		
-  		games := champ.CreateGames(champ.GetPlayers());
-  		assertEqual(2, len champ.GetGames());
-  		IO`println(games);
+  		for i = 1 to champ.GetNumberOfRounds() by 1 do (
+  			games := champ.CreateGames(champ.GetCurrentPlayersOnChampionship());
+  			if i = 1
+  				then (
+  					assertEqual(2, len games);
+  				)
+  			elseif i = 2
+  				then (
+  					assertEqual(1, len games);
+  				);
+  			
+  			for j = 1 to len games by 1 do (
+  				games(j).PlayRandomly();
+  			);
+  			
+  			champ.PickAllWinnerPlayers(games);
+  			if i = 1
+  				then (
+  					assertEqual(2, len champ.GetCurrentPlayersOnChampionship());
+  				)
+  			elseif i = 2
+  				then (
+  					assertEqual(1, len champ.GetCurrentPlayersOnChampionship());
+  				);
+  			
+  			for j = 1 to len champ.GetCurrentPlayersOnChampionship() by 1 do (
+  				IO`print("Winner of Game ");
+  				IO`print(j);
+  				IO`print(" is: ");
+  				IO`println(champ.GetCurrentPlayersOnChampionship()(j).GetName());
+  			);
+  		
+  			champ.AddGames(games);
+  		);
   	);
   
   public testAll: () ==> ()
   testAll() == (
     testPlayer();
     testPlayerWithKey();
-    testGameWinnerCodeBreaker();
+   	testGameWinnerCodeBreaker();
     testGameWinnerCodeMaker();
-    testChampionshipWithEvenNumberOfPlayers();
+    testRandomlyGame();
+    testChampionshipWithFourPlayers();
   );
   
 end GameTests

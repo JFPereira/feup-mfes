@@ -11,7 +11,7 @@ class Game
         public codeBreaker: Player;
         public makerResults : seq of Result := [];
 				public breakerMoves: seq of Player`Key := [];
-        public finished : bool := false;
+        private finished : bool := false;
         
         inv len makerResults = 10 - moves;
         inv finished => len makerResults > 0 and len makerResults < 11;
@@ -49,6 +49,11 @@ class Game
 							return codeMaker;
 					);
 					
+				pure public IsFinished : () ==> bool
+					IsFinished() == (
+						return finished;
+					);
+					
  			-- adds a new key to the set of the breaker moves and sets the current key of the breaker player
   			public AddKey : Player`Key ==> ()
 					AddKey (key) == (
@@ -76,9 +81,9 @@ class Game
 					);
 					
 					for i = 1 to 6 by 1 do (
-						makerElemRep := Utils`Count(makerKey, i);
-						breakerElemRep := Utils`Count(breakerKey, i);
-						sumMins := sumMins + Utils`Min(makerElemRep, breakerElemRep);
+						makerElemRep := Utilities`Count(makerKey, i);
+						breakerElemRep := Utilities`Count(breakerKey, i);
+						sumMins := sumMins + Utilities`Min(makerElemRep, breakerElemRep);
 					);
 					
 					e_exists := sumMins - e_corrects;
@@ -124,10 +129,11 @@ class Game
 									
 									if finished
 										then (
-											IO`println("You win the game.");
+											IO`print(codeBreaker.GetName());
+											IO`println(" won the game.");
 											IO`print("The key was ");
 											IO`print(codeBreaker.GetKey());
-											IO`print(" and your number of tries was ");
+											IO`print(" and the number of tries was ");
 											IO`print(len makerResults);
 											IO`println(".");
 											IO`print("\n");
@@ -135,9 +141,12 @@ class Game
 									elseif moves = 0 and not finished 
 										then (
 											finished := true;
-											IO`println("You lost the game.");
+											IO`print(codeMaker.GetName());
+											IO`println(" won the game.");
 											IO`print("The key was ");
 											IO`print(GetFinalKey());
+											IO`print(" and the number of moves was ");
+											IO`print(len makerResults);
 											IO`println(".");
 											IO`print("\n");
 										);
@@ -156,7 +165,7 @@ class Game
 				
 				private GenerateRandomlyKey : () ==> Player`Key
 					GenerateRandomlyKey() == (
-						dcl randomKey : Player`Key;
+						dcl randomKey : Player`Key := [];
 						
 						for i = 1 to 4 by 1 do (
 							randomKey := randomKey^[MATH`rand(4) + 1];
@@ -168,9 +177,13 @@ class Game
 				
 				public PlayRandomly : () ==> ()
 					PlayRandomly() == (
+						if len codeMaker.GetKey() = 0
+							then
+								codeMaker.SetKey(GenerateRandomlyKey());
+					
 						while not finished do (
-							
-						)
+							MakeMove(GenerateRandomlyKey());
+						);
 					);
 					
 				
