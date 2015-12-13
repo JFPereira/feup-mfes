@@ -35,6 +35,11 @@ operations
 		GetGames() == (
 			return games;
 		);
+		
+	public AddGames : seq of Game ==> ()
+		AddGames(finishedGames) == (
+			games := games^finishedGames;
+		);
 	
 	public ShufflePlayers : seq of Player ==> seq of nat1
 		ShufflePlayers(sequenceOfPlayers) == (
@@ -60,15 +65,16 @@ operations
 	public CreateGames : seq of Player ==> seq of Game
 		CreateGames(sequenceOfPlayers) == (
 			dcl playersOrder : seq of nat1 := ShufflePlayers(sequenceOfPlayers);
+			dcl generatedGames : seq of Game;
 			
 			IO`print("NumberOfGames: ");
 			IO`println(numberOfGames);
 			
 			for i = 1 to len sequenceOfPlayers by 2 do (
-				games := games^[new Game(sequenceOfPlayers(playersOrder(i)), sequenceOfPlayers(playersOrder(i + 1)))]
+				generatedGames := generatedGames^[new Game(sequenceOfPlayers(playersOrder(i)), sequenceOfPlayers(playersOrder(i + 1)))]
 			);
 			
-			return games;
+			return generatedGames;
 		);
 
 functions

@@ -59,7 +59,7 @@ class Game
 				post len breakerMoves = len breakerMoves~ + 1;
 				
 				-- checks the move of the breaker player
-				public CheckMove : () ==> ()
+				private CheckMove : () ==> ()
 				CheckMove () == (
 					dcl e_corrects : nat := 0;
 					dcl e_exists : nat := 0;
@@ -91,7 +91,7 @@ class Game
 				);
 					
 				-- print board
-				public PrintBoard : seq of Player`Key * seq of Result ==> ()
+				private PrintBoard : seq of Player`Key * seq of Result ==> ()
 					PrintBoard (breakerKeys, makerResponses) == (
 						dcl currentMove : nat := 10 - moves;
 					
@@ -153,6 +153,27 @@ class Game
 					)
 				)
 				pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7);
+				
+				private GenerateRandomlyKey : () ==> Player`Key
+					GenerateRandomlyKey() == (
+						dcl randomKey : Player`Key;
+						
+						for i = 1 to 4 by 1 do (
+							randomKey := randomKey^[MATH`rand(4) + 1];
+						);
+						
+						return randomKey;
+					);
+				--post len randomKey > 0 and len randomKey < 5 and forall x in set elems randomKey & (x > 0 and x < 7);
+				
+				public PlayRandomly : () ==> ()
+					PlayRandomly() == (
+						while not finished do (
+							
+						)
+					);
+					
+				
 				
         functions
 				-- TODO Define functiones here
