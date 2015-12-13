@@ -1,0 +1,79 @@
+class Championship
+types
+-- TODO Define types here
+
+values
+-- TODO Define values here
+
+instance variables
+-- TODO Define instance variables here
+	private numberOfGames : nat1;
+	private players : seq of Player;
+	private games : seq of Game;
+	
+	inv numberOfGames = len players - 2 or numberOfGames = len players - 1;
+	
+operations
+-- TODO Define operations here
+	public Championship : seq of Player ==> Championship
+		Championship (allPlayers) == (
+			numberOfGames := len allPlayers / 2;
+	
+			players := allPlayers;
+			games := [];
+			
+			return self;
+		)
+	pre len allPlayers > 1;
+
+	pure public GetPlayers : () ==> seq of Player
+		GetPlayers() == (
+			return players;
+		);
+		
+	pure public GetGames : () ==> seq of Game
+		GetGames() == (
+			return games;
+		);
+	
+	public ShufflePlayers : seq of Player ==> seq of nat1
+		ShufflePlayers(sequenceOfPlayers) == (
+			dcl playerShuffled : int;
+			dcl selectedPlayers : seq of nat1 := [];
+			
+			for p in sequenceOfPlayers do (
+				if len selectedPlayers = 0
+					then
+						playerShuffled := MATH`rand(len players - 1) + 1
+				else (
+					while playerShuffled in set elems selectedPlayers and len selectedPlayers <> len sequenceOfPlayers do (
+						playerShuffled := MATH`rand(len players) + 1;
+					);
+				);
+				
+				selectedPlayers := selectedPlayers^[playerShuffled];
+			);
+			
+			return selectedPlayers
+		);
+		
+	public CreateGames : seq of Player ==> seq of Game
+		CreateGames(sequenceOfPlayers) == (
+			dcl playersOrder : seq of nat1 := ShufflePlayers(sequenceOfPlayers);
+			
+			IO`print("NumberOfGames: ");
+			IO`println(numberOfGames);
+			
+			for i = 1 to len sequenceOfPlayers by 2 do (
+				games := games^[new Game(sequenceOfPlayers(playersOrder(i)), sequenceOfPlayers(playersOrder(i + 1)))]
+			);
+			
+			return games;
+		);
+
+functions
+-- TODO Define functiones here
+
+traces
+-- TODO Define Combinatorial Test Traces here
+end Championship

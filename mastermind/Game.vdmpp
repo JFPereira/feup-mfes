@@ -7,19 +7,20 @@ class Game
 				
         instance variables
         private moves : nat := 10;
-        public codeMaker: CodeMakerPlayer;
-        public codeBreaker: CodeBreakerPlayer;
-        public results : seq of Result := [];
+        public codeMaker: Player;
+        public codeBreaker: Player;
+        public makerResults : seq of Result := [];
+				public breakerMoves: seq of Player`Key := [];
         public finished : bool := false;
         
-        inv len results <= moves;
-        inv finished <=> len results > 0 and results(len results) = [4, 0];
-        inv forall i in set inds results \ {len results} & results(i) <> [4, 0];
+        inv len makerResults = 10 - moves;
+        inv finished => len makerResults > 0 and len makerResults < 11;
+        inv forall i in set inds makerResults \ {len makerResults} & makerResults(i) <> [4, 0];
                 
         operations
         -- TODO Define operations here
         -- constructor, initializes the game
-				public Game: CodeMakerPlayer * CodeBreakerPlayer ==> Game
+				public Game: Player * Player ==> Game
 					Game(codeMakerPlayer, codeBreakerPlayer) == (
 						codeMaker := codeMakerPlayer;
 						codeBreaker := codeBreakerPlayer;
@@ -31,41 +32,66 @@ class Game
 					GetCurrentMoves () == return moves;
 				
 				-- get the code maker final key
-				public GetFinalKey : () ==> seq of int
-					GetFinalKey () == return codeMaker.GetFinalKey();
-					
-					public CheckMove : () ==> ()
-					CheckMove () == (
-						dcl e_corrects : nat := 0;
-						dcl e_exists : nat := 0;
-						dcl makerElemRep : nat := 0;
-						dcl breakerElemRep : nat := 0;
-						dcl sumMins : nat := 0;
-						dcl breakerKey : CodeBreakerPlayer`Key := codeBreaker.GetCurrentKey();
-						dcl makerKey : CodeMakerPlayer`Key := codeMaker.GetFinalKey();
-					
-						for i = 1 to len codeBreaker.GetCurrentKey() by 1 do (
-								if breakerKey(i) = makerKey(i)
-									then
-										e_corrects := e_corrects + 1;
-						);
-						
-						for i = 1 to 6 by 1 do (
-							makerElemRep := Utils`Count(makerKey, i);
-							breakerElemRep := Utils`Count(breakerKey, i);
-							sumMins := sumMins + Utils`Min(makerElemRep, breakerElemRep);
-						);
-						
-						e_exists := sumMins - e_corrects;
-						
-						atomic (
-							results := results^[[e_corrects, e_exists]];
-							finished := e_corrects = 4
-						);	
+				pure public GetFinalKey : () ==> seq of int
+					GetFinalKey () == return codeMaker.GetKey();
+				
+				pure public GetLastResult : () ==> Result
+					GetLastResult() == (
+						return makerResults(len makerResults);
 					);
 					
+				pure public GetWinnerPlayer : () ==> Player
+					GetWinnerPlayer() == (
+						if GetLastResult() = [4, 0]
+							then
+								return codeBreaker
+						else
+							return codeMaker;
+					);
+					
+ 			-- adds a new key to the set of the breaker moves and sets the current key of the breaker player
+  			public AddKey : Player`Key ==> ()
+					AddKey (key) == (
+						codeBreaker.SetKey(key);
+						breakerMoves := breakerMoves^[key];
+					)
+				pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7)
+				post len breakerMoves = len breakerMoves~ + 1;
+				
+				-- checks the move of the breaker player
+				public CheckMove : () ==> ()
+				CheckMove () == (
+					dcl e_corrects : nat := 0;
+					dcl e_exists : nat := 0;
+					dcl makerElemRep : nat := 0;
+					dcl breakerElemRep : nat := 0;
+					dcl sumMins : nat := 0;
+					dcl breakerKey : Player`Key := codeBreaker.GetKey();
+					dcl makerKey : Player`Key := codeMaker.GetKey();
+				
+					for i = 1 to len codeBreaker.GetKey() by 1 do (
+							if breakerKey(i) = makerKey(i)
+								then
+									e_corrects := e_corrects + 1;
+					);
+					
+					for i = 1 to 6 by 1 do (
+						makerElemRep := Utils`Count(makerKey, i);
+						breakerElemRep := Utils`Count(breakerKey, i);
+						sumMins := sumMins + Utils`Min(makerElemRep, breakerElemRep);
+					);
+					
+					e_exists := sumMins - e_corrects;
+					
+					atomic (
+						moves := moves - 1;
+						makerResults := makerResults^[[e_corrects, e_exists]];
+						finished := e_corrects = 4
+					);	
+				);
+					
 				-- print board
-				public PrintBoard : seq of CodeBreakerPlayer`Key * seq of Result ==> ()
+				public PrintBoard : seq of Player`Key * seq of Result ==> ()
 					PrintBoard (breakerKeys, makerResponses) == (
 						dcl currentMove : nat := 10 - moves;
 					
@@ -85,25 +111,24 @@ class Game
 					);
 					
 				-- make a move
-				public MakeMove : (CodeBreakerPlayer`Key) ==> ()
+				public MakeMove : (Player`Key) ==> ()
 					MakeMove (key) == (
 					if moves > 0
 						then (
 							if not finished
 								then (
-									moves := moves - 1;
-									codeBreaker.AddKey(key);
+									AddKey(key);
 									CheckMove();
 									
-									PrintBoard(codeBreaker.GetAllKeys(), results);
+									PrintBoard(breakerMoves, makerResults);
 									
 									if finished
 										then (
 											IO`println("You win the game.");
 											IO`print("The key was ");
-											IO`print(codeBreaker.GetCurrentKey());
+											IO`print(codeBreaker.GetKey());
 											IO`print(" and your number of tries was ");
-											IO`print(len results);
+											IO`print(len makerResults);
 											IO`println(".");
 											IO`print("\n");
 										)
@@ -128,7 +153,7 @@ class Game
 					)
 				)
 				pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7);
-					
+				
         functions
 				-- TODO Define functiones here
 				traces
