@@ -27,7 +27,7 @@ operations
 					
 			return b; 
 		);
-  	
+	
 functions
 -- TODO Define functiones here
 traces

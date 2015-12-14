@@ -9,7 +9,7 @@ import java.util.*;
 public class Championship {
     private Number numberOfGames;
     private Number numberOfRounds;
-    private VDMSeq players;
+    private VDMSeq players = SeqUtil.seq();
     private VDMSeq currentPlayersInChampionship;
     private VDMSeq games;
 
@@ -49,15 +49,21 @@ public class Championship {
 
     public void AddGames(final VDMSeq finishedGames) {
         games = SeqUtil.conc(Utils.copy(games), Utils.copy(finishedGames));
+
+        for (Iterator iterator_6 = games.iterator(); iterator_6.hasNext();) {
+            Game g = (Game) iterator_6.next();
+            g.GetCodeMaker().SumMoves(g.GetMakerResults().size());
+            g.GetCodeBreaker().SumMoves(g.GetBreakerMoves().size());
+        }
     }
 
     public VDMSeq ShufflePlayers(final VDMSeq sequenceOfPlayers) {
         Number playerShuffled = 0L;
         VDMSeq selectedPlayers = SeqUtil.seq();
 
-        for (Iterator iterator_5 = sequenceOfPlayers.iterator();
-                iterator_5.hasNext();) {
-            Player p = (Player) iterator_5.next();
+        for (Iterator iterator_7 = sequenceOfPlayers.iterator();
+                iterator_7.hasNext();) {
+            Player p = (Player) iterator_7.next();
 
             if (Utils.equals(selectedPlayers.size(), 0L)) {
                 playerShuffled = MATH.rand(sequenceOfPlayers.size()).longValue() +
@@ -66,17 +72,17 @@ public class Championship {
                 Boolean whileCond_1 = true;
 
                 while (whileCond_1) {
-                    Boolean andResult_1 = false;
+                    Boolean andResult_2 = false;
 
                     if (SetUtil.inSet(playerShuffled,
                                 SeqUtil.elems(Utils.copy(selectedPlayers)))) {
                         if (!(Utils.equals(selectedPlayers.size(),
                                     sequenceOfPlayers.size()))) {
-                            andResult_1 = true;
+                            andResult_2 = true;
                         }
                     }
 
-                    whileCond_1 = andResult_1;
+                    whileCond_1 = andResult_2;
 
                     if (!(whileCond_1)) {
                         break;
@@ -128,6 +134,14 @@ public class Championship {
         }
 
         currentPlayersInChampionship = Utils.copy(winnerPlayers);
+    }
+
+    public void PrintStats() {
+        IO.print("\nThe winner of championship was ");
+        IO.print(((Player) GetCurrentPlayersOnChampionship().get(0)).GetName());
+        IO.print(" and has made ");
+        IO.print(((Player) GetCurrentPlayersOnChampionship().get(0)).GetNumberOfMoves());
+        IO.print(" moves.\n\n");
     }
 
     public String toString() {

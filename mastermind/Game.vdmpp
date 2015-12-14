@@ -7,10 +7,10 @@ class Game
 				
         instance variables
         private moves : nat := 10;
-        public codeMaker: Player;
-        public codeBreaker: Player;
-        public makerResults : seq of Result := [];
-				public breakerMoves: seq of Player`Key := [];
+        private codeMaker: Player;
+        private codeBreaker: Player;
+        private makerResults : seq of Result := [];
+				private breakerMoves: seq of Player`Key := [];
         private finished : bool := false;
         
         inv len makerResults = 10 - moves;
@@ -34,11 +34,23 @@ class Game
 				-- get the code maker final key
 				pure public GetFinalKey : () ==> seq of int
 					GetFinalKey () == return codeMaker.GetKey();
+					
+				-- get the code maker player
+				pure public GetCodeMaker : () ==> Player
+					GetCodeMaker () == return codeMaker;
+					
+				-- get the code breaker player
+				pure public GetCodeBreaker : () ==> Player
+					GetCodeBreaker () == return codeBreaker;
+					
+				pure public GetMakerResults : () ==> seq of Result
+					GetMakerResults () == return makerResults;
+					
+				pure public GetBreakerMoves : () ==> seq of Player`Key
+					GetBreakerMoves () == return breakerMoves;
 				
 				pure public GetLastResult : () ==> Result
-					GetLastResult() == (
-						return makerResults(len makerResults);
-					);
+					GetLastResult() == return makerResults(len makerResults);
 					
 				pure public GetWinnerPlayer : () ==> Player
 					GetWinnerPlayer() == (
@@ -163,26 +175,14 @@ class Game
 				)
 				pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7);
 				
-				private GenerateRandomlyKey : () ==> Player`Key
-					GenerateRandomlyKey() == (
-						dcl randomKey : Player`Key := [];
-						
-						for i = 1 to 4 by 1 do (
-							randomKey := randomKey^[MATH`rand(4) + 1];
-						);
-						
-						return randomKey;
-					);
-				--post len randomKey > 0 and len randomKey < 5 and forall x in set elems randomKey & (x > 0 and x < 7);
-				
 				public PlayRandomly : () ==> ()
 					PlayRandomly() == (
 						if len codeMaker.GetKey() = 0
 							then
-								codeMaker.SetKey(GenerateRandomlyKey());
+								codeMaker.SetKey(Player`GenerateRandomlyKey());
 					
 						while not finished do (
-							MakeMove(GenerateRandomlyKey());
+							MakeMove(Player`GenerateRandomlyKey());
 						);
 					);
 					

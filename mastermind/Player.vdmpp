@@ -3,7 +3,8 @@ class Player
 types
 -- TODO Define types here
 	public String = seq of char;
-	public Key = seq of int;
+	public Key = seq of nat1
+	inv k == forall x in set elems k & (x > 0 and x < 7);
 	
 values
 -- TODO Define values here
@@ -11,7 +12,7 @@ values
 instance variables
 -- TODO Define instance variables here
 	private name : String := [];
-	private key: Key := [];
+	private key : Key := [];
 	private numMoves : nat := 0;
 
 operations
@@ -64,6 +65,18 @@ operations
   	SumMoves (moves) == (
   		numMoves := numMoves + moves;
   	);
+  	
+  public static GenerateRandomlyKey : () ==> Key
+		GenerateRandomlyKey() == (
+			dcl randomKey : seq of nat1 := [];
+			
+			for i = 1 to 4 by 1 do (
+				randomKey := randomKey^[MATH`rand(4) + 1];
+			);
+					
+			return randomKey;
+		);
+	--post len randomKey > 0 and len randomKey < 5 and forall x in set elems randomKey & (x > 0 and x < 7);
 	
 functions
 -- TODO Define functions here

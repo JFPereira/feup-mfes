@@ -9,9 +9,12 @@ instance variables
 -- TODO Define instance variables here
 	private numberOfGames : nat1;
 	private numberOfRounds : nat1;
-	private players : seq of Player;
+	private players : seq of Player := [];
 	private currentPlayersInChampionship : seq of Player;
 	private games : seq of Game;
+	
+	-- only even number of players
+	inv len players rem 2 = 0;
 	
 operations
 -- TODO Define operations here
@@ -27,7 +30,7 @@ operations
 			
 			return self;
 		)
-	pre len allPlayers > 1;
+	pre len allPlayers > 1 and len players rem 2 = 0;
 
 	pure public GetNumberOfRounds : () ==> nat1
 		GetNumberOfRounds() == (
@@ -52,6 +55,12 @@ operations
 	public AddGames : seq of Game ==> ()
 		AddGames(finishedGames) == (
 			games := games^finishedGames;
+			
+			for g in games do (
+				g.GetCodeMaker().SumMoves(len g.GetMakerResults());
+				g.GetCodeBreaker().SumMoves(len g.GetBreakerMoves());
+			);
+			
 		);
 	
 	public ShufflePlayers : seq of Player ==> seq of nat1
@@ -100,6 +109,14 @@ operations
 			currentPlayersInChampionship := winnerPlayers;
 		);
 		
+	public PrintStats : () ==> ()
+		PrintStats() == (
+			IO`print("\nThe winner of championship was ");
+			IO`print((hd GetCurrentPlayersOnChampionship()).GetName());
+			IO`print(" and has made ");
+			IO`print((hd GetCurrentPlayersOnChampionship()).GetNumberOfMoves());
+			IO`print(" moves.\n\n");
+		);
 
 functions
 -- TODO Define functiones here

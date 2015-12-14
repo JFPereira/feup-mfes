@@ -62,6 +62,20 @@ public class Player {
         numMoves = numMoves.longValue() + moves.longValue();
     }
 
+    public static VDMSeq GenerateRandomlyKey() {
+        VDMSeq randomKey = SeqUtil.seq();
+        long toVar_9 = 4L;
+        long byVar_9 = 1L;
+
+        for (Long i = 1L; (byVar_9 < 0) ? (i >= toVar_9) : (i <= toVar_9);
+                i += byVar_9) {
+            randomKey = SeqUtil.conc(Utils.copy(randomKey),
+                    SeqUtil.seq(MATH.rand(4L).longValue() + 1L));
+        }
+
+        return Utils.copy(randomKey);
+    }
+
     public String toString() {
         return "Player{" + "name := " + Utils.toString(name) + ", key := " +
         Utils.toString(key) + ", numMoves := " + Utils.toString(numMoves) +

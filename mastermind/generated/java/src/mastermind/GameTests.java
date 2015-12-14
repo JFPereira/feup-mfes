@@ -92,11 +92,11 @@ public class GameTests extends MyTestCase {
         Championship champ = new Championship(SeqUtil.seq(p1, p2, p3, p4));
         super.assertEqual(4L, champ.GetPlayers().size());
 
-        long toVar_9 = champ.GetNumberOfRounds().longValue();
-        long byVar_9 = 1L;
+        long toVar_8 = champ.GetNumberOfRounds().longValue();
+        long byVar_8 = 1L;
 
-        for (Long i = 1L; (byVar_9 < 0) ? (i >= toVar_9) : (i <= toVar_9);
-                i += byVar_9) {
+        for (Long i = 1L; (byVar_8 < 0) ? (i >= toVar_8) : (i <= toVar_8);
+                i += byVar_8) {
             games = champ.CreateGames(champ.GetCurrentPlayersOnChampionship());
 
             if (Utils.equals(i, 1L)) {
@@ -105,11 +105,11 @@ public class GameTests extends MyTestCase {
                 super.assertEqual(1L, games.size());
             }
 
-            long toVar_7 = games.size();
-            long byVar_7 = 1L;
+            long toVar_6 = games.size();
+            long byVar_6 = 1L;
 
-            for (Long j = 1L; (byVar_7 < 0) ? (j >= toVar_7) : (j <= toVar_7);
-                    j += byVar_7) {
+            for (Long j = 1L; (byVar_6 < 0) ? (j >= toVar_6) : (j <= toVar_6);
+                    j += byVar_6) {
                 ((Game) Utils.get(games, j)).PlayRandomly();
             }
 
@@ -123,11 +123,11 @@ public class GameTests extends MyTestCase {
                     champ.GetCurrentPlayersOnChampionship().size());
             }
 
-            long toVar_8 = champ.GetCurrentPlayersOnChampionship().size();
-            long byVar_8 = 1L;
+            long toVar_7 = champ.GetCurrentPlayersOnChampionship().size();
+            long byVar_7 = 1L;
 
-            for (Long j = 1L; (byVar_8 < 0) ? (j >= toVar_8) : (j <= toVar_8);
-                    j += byVar_8) {
+            for (Long j = 1L; (byVar_7 < 0) ? (j >= toVar_7) : (j <= toVar_7);
+                    j += byVar_7) {
                 IO.print("Winner of Game ");
                 IO.print(j);
                 IO.print(" is: ");
@@ -136,6 +136,7 @@ public class GameTests extends MyTestCase {
             }
 
             champ.AddGames(Utils.copy(games));
+            champ.PrintStats();
         }
     }
 

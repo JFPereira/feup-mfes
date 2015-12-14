@@ -8,10 +8,10 @@ import java.util.*;
 @SuppressWarnings("all")
 public class Game {
     private Number moves = 10L;
-    public Player codeMaker;
-    public Player codeBreaker;
-    public VDMSeq makerResults = SeqUtil.seq();
-    public VDMSeq breakerMoves = SeqUtil.seq();
+    private Player codeMaker;
+    private Player codeBreaker;
+    private VDMSeq makerResults = SeqUtil.seq();
+    private VDMSeq breakerMoves = SeqUtil.seq();
     private Boolean finished = false;
 
     public Game(final Player codeMakerPlayer, final Player codeBreakerPlayer) {
@@ -35,6 +35,22 @@ public class Game {
 
     public VDMSeq GetFinalKey() {
         return codeMaker.GetKey();
+    }
+
+    public Player GetCodeMaker() {
+        return codeMaker;
+    }
+
+    public Player GetCodeBreaker() {
+        return codeBreaker;
+    }
+
+    public VDMSeq GetMakerResults() {
+        return Utils.copy(makerResults);
+    }
+
+    public VDMSeq GetBreakerMoves() {
+        return Utils.copy(breakerMoves);
     }
 
     public VDMSeq GetLastResult() {
@@ -141,15 +157,15 @@ public class Game {
                     IO.println(".");
                     IO.print("\n");
                 } else {
-                    Boolean andResult_8 = false;
+                    Boolean andResult_9 = false;
 
                     if (Utils.equals(moves, 0L)) {
                         if (!(finished)) {
-                            andResult_8 = true;
+                            andResult_9 = true;
                         }
                     }
 
-                    if (andResult_8) {
+                    if (andResult_9) {
                         finished = true;
                         IO.print(codeMaker.GetName());
                         IO.println(" won the game.");
@@ -171,23 +187,9 @@ public class Game {
         }
     }
 
-    private VDMSeq GenerateRandomlyKey() {
-        VDMSeq randomKey = SeqUtil.seq();
-        long toVar_6 = 4L;
-        long byVar_6 = 1L;
-
-        for (Long i = 1L; (byVar_6 < 0) ? (i >= toVar_6) : (i <= toVar_6);
-                i += byVar_6) {
-            randomKey = SeqUtil.conc(Utils.copy(randomKey),
-                    SeqUtil.seq(MATH.rand(4L).longValue() + 1L));
-        }
-
-        return Utils.copy(randomKey);
-    }
-
     public void PlayRandomly() {
         if (Utils.equals(codeMaker.GetKey().size(), 0L)) {
-            codeMaker.SetKey(GenerateRandomlyKey());
+            codeMaker.SetKey(Player.GenerateRandomlyKey());
         }
 
         Boolean whileCond_2 = true;
@@ -199,7 +201,7 @@ public class Game {
                 break;
             }
 
-            MakeMove(GenerateRandomlyKey());
+            MakeMove(Player.GenerateRandomlyKey());
         }
     }
 
