@@ -3,6 +3,9 @@ package mastermind;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
+
+import org.overture.codegen.runtime.VDMSeq;
 
 public class Mastermind {
 
@@ -68,7 +71,7 @@ public class Mastermind {
 	}
 
 	public static void PlayAGameOption() throws IOException {
-		System.out.println("####################################");
+		System.out.println("\n####################################");
 		System.out.println("####################################");
 		System.out.println("#######                      #######");
 		System.out.println("#######      MasterMind      #######");
@@ -95,6 +98,7 @@ public class Mastermind {
 			break;
 
 		case 3:
+			System.out.print("\n");
 			startMenu();
 			break;
 
@@ -105,19 +109,86 @@ public class Mastermind {
 
 	}
 
-	private static void playGameAgainstPlayer() {
-		// TODO Auto-generated method stub
+	@SuppressWarnings("resource")
+	private static void playGameAgainstComputer() throws IOException {
+		String name = new String();
+
+		System.out.print("\n#Insert your name: ");
+		name = br.readLine();
+
+		System.out.print("\n#Hello " + name + "! Let's start the game :) !\n\n");
+
+		Player codeMaker = new Player("Computer", Player.GenerateRandomlyKey());
+		Player codeBreaker = new Player(name);
+
+		Game game = new Game(codeMaker, codeBreaker);
+
+		runGame(game);
+
+		System.out.print("\n\n");
 		
+		System.out.println("Press Any Key To Continue...");
+        new Scanner(System.in).nextLine();
+
+		startMenu();
 	}
 
-	private static void playGameAgainstComputer() {
-		// TODO Auto-generated method stub
+	@SuppressWarnings("resource")
+	private static void playGameAgainstPlayer() throws IOException {
+		String makerName = new String(), breakerName = new String();
+		VDMSeq makerCode = new VDMSeq();
+
+		System.out.print("\n#Code Maker, insert your name: ");
+		makerName = br.readLine();
+
+		System.out.print("\n#Hello " + makerName + "! Now insert your code (example: 1,1,1,1): ");
+		makerCode = convertStringToKey(br.readLine());
 		
+		System.out.print("\n#Code Breaker, insert your name: ");
+		breakerName = br.readLine();
+		
+		System.out.print("\n#Hello " + breakerName + "! Let's start the game :) !\n\n");
+		
+		Player codeMaker = new Player(makerName, makerCode);
+		Player codeBreaker = new Player(breakerName);
+
+		Game game = new Game(codeMaker, codeBreaker);
+
+		runGame(game);
+
+		System.out.print("\n\n");
+
+		System.out.println("Press Any Key To Continue...");
+        new Scanner(System.in).nextLine();
+		
+		startMenu();
 	}
 
 	private static void BuildAChampionshipOption() {
 		// TODO Auto-generated method stub
 
+	}
+
+	private static void runGame(Game game) throws IOException {
+		String str = new String();
+
+		while (!game.IsFinished()) {
+			System.out.print("#" + game.GetCodeBreaker().GetName() + ", insert your code (example: 1,1,1,1): ");
+			str = br.readLine();
+
+			game.MakeMove(convertStringToKey(str));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static VDMSeq convertStringToKey(String str) {
+		VDMSeq key = new VDMSeq();
+		String[] elems = str.split(",");
+
+		for (int i = 0; i < elems.length; i++)
+			key.add(Long.parseLong(elems[i]));
+
+		return key;
 	}
 
 	private static void ShowHelp() {
