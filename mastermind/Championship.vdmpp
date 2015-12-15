@@ -21,7 +21,7 @@ operations
 			
 			return self;
 		)
-	pre len allPlayers > 1 and len players rem 2 = 0;
+	pre len allPlayers > 1 and len allPlayers rem 2 = 0;
 
 	-- return the number of the championship's rounds
 	pure public GetNumberOfRounds : () ==> nat1
