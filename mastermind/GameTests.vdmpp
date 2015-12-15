@@ -25,6 +25,14 @@ operations
 				assertTrue(x >= 1 and x <= 6);
 			)
 		);
+		
+		-- check if a key can be created with five elements
+	public testCreateKeyWithMoreThanFourElems : () ==> ()
+		testCreateKeyWithMoreThanFourElems() == (
+			dcl key : Player`Key;
+			
+			key := [1, 2, 3, 4, 5];
+		);
 
 	-- checks if a default player is created with a certain key
 	public testPlayer : () ==> ()
@@ -254,6 +262,7 @@ operations
   testAll() == (
   	testCreateKey();
   	testCreateRandomlyKey();
+  	--testCreateKeyWithMoreThanFourElems();
     testPlayer();
     testPlayerWithKey();
     testGameMove();
