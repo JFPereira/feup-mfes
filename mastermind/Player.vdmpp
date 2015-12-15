@@ -1,28 +1,24 @@
 class Player
 
 types
--- TODO Define types here
 	public String = seq of char;
 	public Key = seq of nat1
 	inv k == forall x in set elems k & (x > 0 and x < 7);
 	
-values
--- TODO Define values here
-
 instance variables
--- TODO Define instance variables here
 	private name : String := [];
 	private key : Key := [];
 	private numMoves : nat := 0;
 
 operations
--- TODO Define operations here
+	-- default constructor of the player class 
 	public Player : () ==> Player
   	Player () == (
   		name := "Default";
   		return self
   	);
-  	
+  
+  -- constructor of the player class with a string parameter
   public Player : String ==> Player
   	Player (playerName) == (
   		name := playerName;
@@ -30,58 +26,56 @@ operations
   	)
   pre len playerName > 0;
   	
+  -- constructor of the player class with a string parameter 
   public Player: String * Key ==> Player
   	Player (playerName, playerKey) == (
   		name := playerName;
   		key := playerKey;
   		return self
   	)
-  pre len playerKey > 0 and len playerKey < 5 and forall x in set elems playerKey & (x > 0 and x < 7) and len playerName > 0;
+  pre len playerKey = 4 and forall x in set elems playerKey & (x > 0 and x < 7) and len playerName > 0;
   
+  -- returns the player's name
   pure public GetName : () ==> String
   	GetName () == (
   		return name;
   	);
   	
-  -- get the current key of the player
+  -- returns the player's current key
   pure public GetKey: () ==> Key
   	GetKey () == (
   		return key;
   	);
-  	
+  
+  -- returns player's the number of moves 
   pure public GetNumberOfMoves : () ==> nat
   	GetNumberOfMoves () == (
   		return numMoves;
   	);
   
-  -- sets the current key to a new one
+  -- sets the player's current key to a new one
   public SetKey : Key ==> ()
 		SetKey (newKey) == (
 			key := newKey;
 		)
-	pre len newKey > 0 and len newKey < 5 and forall x in set elems newKey & (x > 0 and x < 7);
+	pre len newKey = 4 and forall x in set elems newKey & (x > 0 and x < 7);
   	
+  -- adds a number of moves to the player's current number of moves 
   public SumMoves : nat ==> ()
   	SumMoves (moves) == (
   		numMoves := numMoves + moves;
   	);
-  	
+  
+  -- returns a random key
   public static GenerateRandomlyKey : () ==> Key
 		GenerateRandomlyKey() == (
 			dcl randomKey : seq of nat1 := [];
 			
 			for i = 1 to 4 by 1 do (
-				randomKey := randomKey^[MATH`rand(4) + 1];
+				randomKey := randomKey^[MATH`rand(6) + 1];
 			);
 					
 			return randomKey;
 		);
-	--post len randomKey > 0 and len randomKey < 5 and forall x in set elems randomKey & (x > 0 and x < 7);
-	
-functions
--- TODO Define functions here
-
-traces
--- TODO Define Combinatorial Test Traces here
-
+		
 end Player
