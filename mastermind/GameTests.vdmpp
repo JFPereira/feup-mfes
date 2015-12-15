@@ -1,7 +1,32 @@
-class GameTests is subclass of MyTestCase
+class GameTests is subclass of MyTestCase -- represents the test suite
 
-operations  
+operations
 
+	-- check if a key is correctly created
+	public testCreateKey : () ==> ()
+		testCreateKey() == (
+			dcl key : Player`Key := [1, 2, 3, 4];
+			
+			assertEqual([1, 2, 3, 4], key);
+			assertEqual(4, len key);
+			
+			for x in key do ( 
+				assertTrue(x >= 1 and x <= 6);
+			)
+		);
+		
+	-- check if a key is correctly created
+	public testCreateRandomlyKey : () ==> ()
+		testCreateRandomlyKey() == (
+			dcl key : Player`Key := Player`GenerateRandomlyKey();
+			
+			assertEqual(4, len key);
+			for x in key do ( 
+				assertTrue(x >= 1 and x <= 6);
+			)
+		);	
+
+	-- checks if a default player is created with a certain key
 	public testPlayer : () ==> ()
 		testPlayer() == (
 		dcl player: Player := new Player();
@@ -10,12 +35,14 @@ operations
 		assertEqual("Default", player.GetName());
 		);
 	
+	-- checks if a player is created with a certain key
 	public testPlayerWithKey : () ==> ()
 		testPlayerWithKey() == (
 		dcl player: Player := new Player("Cristo", [1, 2, 3, 4]);
 		assertEqual([1, 2, 3, 4], player.GetKey());
 		);
 
+	-- simulates a game with the code breaker as the winner
   public testGameWinnerCodeBreaker : () ==> ()
   	testGameWinnerCodeBreaker() == (
   		dcl codeMaker: Player := new Player("CodeMaker", [6, 6, 5, 2]);
@@ -52,6 +79,7 @@ operations
   		IO`println(g.GetWinnerPlayer().GetName());
   	);
   	
+  	-- simulates a game with the code maker as the winner
   	public testGameWinnerCodeMaker : () ==> ()
   	testGameWinnerCodeMaker() == (
   		dcl codeMaker: Player := new Player("CodeMaker", [1, 2, 4, 1]);
@@ -108,6 +136,7 @@ operations
   		IO`println(g.GetWinnerPlayer().GetName());
   	);
   
+  -- simulates a game with randomly moves
   public testRandomlyGame : () ==> ()
   	testRandomlyGame() == (
   		dcl codeMaker: Player := new Player("CodeMaker", [1, 2, 4, 1]);
@@ -127,18 +156,23 @@ operations
   		IO`println(g.GetWinnerPlayer().GetName());
   	);
   
+  -- simulates a championship, where four players play randomly 
   public testChampionshipWithFourPlayers : () ==> ()
   	testChampionshipWithFourPlayers() == (
+  		-- creating four players to the championship
   		dcl p1 : Player := new Player("Tito");
   		dcl p2 : Player := new Player("Cristina");
   		dcl p3 : Player := new Player("Jacinto");
   		dcl p4 : Player := new Player("Ana");
   		dcl games : seq of Game;
   		
+  		-- creating a championship
   		dcl champ : Championship := new Championship([p1, p2, p3, p4]);
   		assertEqual(4, len champ.GetPlayers());
   		
+  		-- run championship by rounds
   		for i = 1 to champ.GetNumberOfRounds() by 1 do (
+  			-- creates a championship round with the selected players
   			games := champ.CreateGames(champ.GetCurrentPlayersOnChampionship());
   			if i = 1
   				then (
@@ -150,10 +184,13 @@ operations
   				);
   			
   			for j = 1 to len games by 1 do (
+  				-- play games randomly
   				games(j).PlayRandomly();
   			);
   			
+  			-- get all the winner players of the championship round
   			champ.PickAllWinnerPlayers(games);
+  			
   			if i = 1
   				then (
   					assertEqual(2, len champ.GetCurrentPlayersOnChampionship());
@@ -169,10 +206,12 @@ operations
   				IO`print(" is: ");
   				IO`println(champ.GetCurrentPlayersOnChampionship()(j).GetName());
   			);
-  		
+  			
+  			-- adding games to the championship history
   			champ.AddGames(games);
   			
   		);
+  			-- prints the total moves of the championship winner player 
   			champ.PrintStats();
   	);
   
