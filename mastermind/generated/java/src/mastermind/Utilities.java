@@ -13,8 +13,8 @@ public class Utilities {
     public static Number Count(final VDMSeq key, final Number elem) {
         Number count = 0L;
 
-        for (Iterator iterator_8 = key.iterator(); iterator_8.hasNext();) {
-            Number e = (Number) iterator_8.next();
+        for (Iterator iterator_10 = key.iterator(); iterator_10.hasNext();) {
+            Number e = (Number) iterator_10.next();
 
             if (Utils.equals(e, elem)) {
                 count = count.longValue() + 1L;

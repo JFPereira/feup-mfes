@@ -10,6 +10,54 @@ public class GameTests extends MyTestCase {
     public GameTests() {
     }
 
+    public void testCreateKey() {
+        VDMSeq key = SeqUtil.seq(1L, 2L, 3L, 4L);
+        super.assertEqual(SeqUtil.seq(1L, 2L, 3L, 4L), Utils.copy(key));
+        super.assertEqual(4L, key.size());
+
+        for (Iterator iterator_8 = key.iterator(); iterator_8.hasNext();) {
+            Number x = (Number) iterator_8.next();
+
+            {
+                Boolean andResult_11 = false;
+
+                if (x.longValue() >= 1L) {
+                    if (x.longValue() <= 6L) {
+                        andResult_11 = true;
+                    }
+                }
+
+                super.assertTrue(andResult_11);
+            }
+        }
+    }
+
+    public void testCreateRandomlyKey() {
+        VDMSeq key = Player.GenerateRandomlyKey();
+        super.assertEqual(4L, key.size());
+
+        for (Iterator iterator_9 = key.iterator(); iterator_9.hasNext();) {
+            Number x = (Number) iterator_9.next();
+
+            {
+                Boolean andResult_12 = false;
+
+                if (x.longValue() >= 1L) {
+                    if (x.longValue() <= 6L) {
+                        andResult_12 = true;
+                    }
+                }
+
+                super.assertTrue(andResult_12);
+            }
+        }
+    }
+
+    public void testCreateKeyWithMoreThanFourElems() {
+        VDMSeq key = null;
+        key = SeqUtil.seq(1L, 2L, 3L, 4L, 5L);
+    }
+
     public void testPlayer() {
         Player player = new Player();
         player.SetKey(SeqUtil.seq(1L, 2L, 3L, 4L));
@@ -20,6 +68,23 @@ public class GameTests extends MyTestCase {
     public void testPlayerWithKey() {
         Player player = new Player("Cristo", SeqUtil.seq(1L, 2L, 3L, 4L));
         super.assertEqual(SeqUtil.seq(1L, 2L, 3L, 4L), player.GetKey());
+    }
+
+    public void testGameMove() {
+        Player codeMaker = new Player("CodeMaker", SeqUtil.seq(6L, 6L, 5L, 2L));
+        Player codeBreaker = new Player("CodeBreaker");
+        Game g = new Game(codeMaker, codeBreaker);
+        super.assertEqual(10L, g.GetCurrentMoves());
+        g.MakeMove(SeqUtil.seq(1L, 1L, 2L, 2L));
+        super.assertEqual(SeqUtil.seq(1L, 0L), g.GetLastResult());
+    }
+
+    public void testInvalidGameMove() {
+        Player codeMaker = new Player("CodeMaker", SeqUtil.seq(6L, 6L, 5L, 2L));
+        Player codeBreaker = new Player("CodeBreaker");
+        Game g = new Game(codeMaker, codeBreaker);
+        super.assertEqual(10L, g.GetCurrentMoves());
+        g.MakeMove(SeqUtil.seq(1L, 1L, 7L, 2L));
     }
 
     public void testGameWinnerCodeBreaker() {
@@ -136,13 +201,17 @@ public class GameTests extends MyTestCase {
             }
 
             champ.AddGames(Utils.copy(games));
-            champ.PrintStats();
         }
+
+        champ.PrintStats();
     }
 
     public void testAll() {
+        testCreateKey();
+        testCreateRandomlyKey();
         testPlayer();
         testPlayerWithKey();
+        testGameMove();
         testGameWinnerCodeBreaker();
         testGameWinnerCodeMaker();
         testRandomlyGame();

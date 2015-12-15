@@ -7,7 +7,6 @@ import java.util.*;
 
 @SuppressWarnings("all")
 public class Championship {
-    private Number numberOfGames;
     private Number numberOfRounds;
     private VDMSeq players = SeqUtil.seq();
     private VDMSeq currentPlayersInChampionship;
@@ -21,7 +20,6 @@ public class Championship {
     }
 
     public void cg_init_Championship_1(final VDMSeq allPlayers) {
-        numberOfGames = allPlayers.size() - 1L;
         numberOfRounds = Utils.divide(MATH.log(allPlayers.size()).doubleValue(),
                 MATH.log(2L).doubleValue());
         players = Utils.copy(allPlayers);
@@ -145,8 +143,7 @@ public class Championship {
     }
 
     public String toString() {
-        return "Championship{" + "numberOfGames := " +
-        Utils.toString(numberOfGames) + ", numberOfRounds := " +
+        return "Championship{" + "numberOfRounds := " +
         Utils.toString(numberOfRounds) + ", players := " +
         Utils.toString(players) + ", currentPlayersInChampionship := " +
         Utils.toString(currentPlayersInChampionship) + ", games := " +

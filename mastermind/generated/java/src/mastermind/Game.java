@@ -188,7 +188,7 @@ public class Game {
     }
 
     public void PlayRandomly() {
-        if (Utils.equals(codeMaker.GetKey().size(), 0L)) {
+        if (Utils.equals(moves, 10L)) {
             codeMaker.SetKey(Player.GenerateRandomlyKey());
         }
 

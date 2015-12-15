@@ -127,9 +127,9 @@ public class Mastermind {
 		runGame(game);
 
 		System.out.print("\n\n");
-		
+
 		System.out.println("Press Enter To Return To Start Menu...");
-        new Scanner(System.in).nextLine();
+		new Scanner(System.in).nextLine();
 
 		startMenu();
 	}
@@ -144,12 +144,12 @@ public class Mastermind {
 
 		System.out.print("\n#Hello " + makerName + "! Now insert your code (example: 1,1,1,1): ");
 		makerCode = convertStringToKey(br.readLine());
-		
+
 		System.out.print("\n#Code Breaker, insert your name: ");
 		breakerName = br.readLine();
-		
+
 		System.out.print("\n#Hello " + breakerName + "! Let's start the game :) !\n\n");
-		
+
 		Player codeMaker = new Player(makerName, makerCode);
 		Player codeBreaker = new Player(breakerName);
 
@@ -160,48 +160,57 @@ public class Mastermind {
 		System.out.print("\n\n");
 
 		System.out.println("Press Enter To Return To Start Menu...");
-        new Scanner(System.in).nextLine();
-		
+		new Scanner(System.in).nextLine();
+
 		startMenu();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "resource" })
 	private static void BuildAChampionshipOption() throws NumberFormatException, IOException {
 		VDMSeq players = new VDMSeq();
-		
+
 		System.out.print("\n#Insert an even number of players: ");
-		int numberOfPlayers= Integer.parseInt(br.readLine());
-		
-		for(int i = 0; i < numberOfPlayers; i++) {
-			System.out.print("\n#Player " + (i + 1) +", insert your name: ");
+		int numberOfPlayers = Integer.parseInt(br.readLine());
+
+		for (int i = 0; i < numberOfPlayers; i++) {
+			System.out.print("\n#Player " + (i + 1) + ", insert your name: ");
 			players.add(new Player(br.readLine()));
 		}
-		
+
 		Championship c = new Championship(players);
-		
-		for(int i = 0; i < c.GetNumberOfRounds().intValue(); i++) {
+
+		for (int i = 0; i < c.GetNumberOfRounds().intValue(); i++) {
 			VDMSeq games = c.CreateGames(c.GetCurrentPlayersOnChampionship());
-			
-			for(int j = 0; j < games.size(); j++) {
-				Game g = (Game)games.get(j);
-				System.out.println("\nGame " + (j + 1) + " - " + g.GetCodeMaker().GetName() + " VS " + g.GetCodeBreaker().GetName());
-				playChampionshipGame((Game)games.get(j));
+
+			for (int j = 0; j < games.size(); j++) {
+				Game g = (Game) games.get(j);
+				System.out.println("\nGame " + (j + 1) + " - " + g.GetCodeMaker().GetName() + " VS "
+						+ g.GetCodeBreaker().GetName());
+				playChampionshipGame((Game) games.get(j));
 			}
-			
+
 			c.PickAllWinnerPlayers(games);
 			c.AddGames(games);
 		}
-		
+
 		c.PrintStats();
+
+		System.out.print("\n\n");
+
+		System.out.println("Press Enter To Return To Start Menu...");
+		new Scanner(System.in).nextLine();
+
+		startMenu();
 	}
 
 	private static void playChampionshipGame(Game game) throws IOException {
-		System.out.print("\n#" + game.GetCodeMaker().GetName() + ", you are the Code Maker! Please, insert your code (example: 1,1,1,1): ");
-		
+		System.out.print("\n#" + game.GetCodeMaker().GetName()
+				+ ", you are the Code Maker! Please, insert your code (example: 1,1,1,1): ");
+
 		game.GetCodeMaker().SetKey(convertStringToKey(br.readLine()));
 
 		System.out.print("\n#Let the game begins !\n\n");
-		
+
 		runGame(game);
 	}
 
@@ -227,8 +236,27 @@ public class Mastermind {
 		return key;
 	}
 
-	private static void ShowHelp() {
+	@SuppressWarnings("resource")
+	private static void ShowHelp() throws IOException {
+		System.out.println("\nMastermind or Master Mind is a code-breaking game for two players.");
+		System.out.println("One player becomes the codemaker, the other the codebreaker.\n");
+
+		System.out.println("The codemaker chooses a pattern of four code pegs. Duplicates are allowed,");
+		System.out.println("so the player could even choose four code pegs of the same number. The chosen");
+		System.out.println("pattern is placed in the four holes covered by the shield, visible to the");
+		System.out.println("codemaker but not to the codebreaker.\n");
+
+		System.out.println("The codebreaker tries to guess the pattern, in both order and value, within");
+		System.out.println("ten turns.\n");
 		
+		System.out.println("The code pegs values available are 1, 2, 3, 4, 5 or 6.");
+		
+		System.out.print("\n\n");
+
+		System.out.println("Press Enter To Return To Start Menu...");
+		new Scanner(System.in).nextLine();
+
+		startMenu();
 	}
 
 	@SuppressWarnings("resource")
@@ -238,10 +266,10 @@ public class Mastermind {
 		System.out.println("\tJoao Pereira");
 		System.out.println("\tMario Macedo");
 		System.out.println("using VDM++ on Overture IDE and later generated to JAVA.\n");
-		
+
 		System.out.println("Press Enter To Return To Start Menu...");
-        new Scanner(System.in).nextLine();
-        
-        startMenu();
+		new Scanner(System.in).nextLine();
+
+		startMenu();
 	}
 }

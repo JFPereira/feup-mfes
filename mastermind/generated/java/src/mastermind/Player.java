@@ -8,7 +8,7 @@ import java.util.*;
 @SuppressWarnings("all")
 public class Player {
     private String name = SeqUtil.toStr(SeqUtil.seq());
-    private VDMSeq key = SeqUtil.seq();
+    private VDMSeq key;
     private Number numMoves = 0L;
 
     public Player() {
@@ -70,7 +70,7 @@ public class Player {
         for (Long i = 1L; (byVar_9 < 0) ? (i >= toVar_9) : (i <= toVar_9);
                 i += byVar_9) {
             randomKey = SeqUtil.conc(Utils.copy(randomKey),
-                    SeqUtil.seq(MATH.rand(4L).longValue() + 1L));
+                    SeqUtil.seq(MATH.rand(6L).longValue() + 1L));
         }
 
         return Utils.copy(randomKey);
