@@ -1,12 +1,6 @@
-class Championship
-types
--- TODO Define types here
-
-values
--- TODO Define values here
+class Championship -- represents championship 
 
 instance variables
--- TODO Define instance variables here
 	private numberOfGames : nat1;
 	private numberOfRounds : nat1;
 	private players : seq of Player := [];
@@ -17,8 +11,7 @@ instance variables
 	inv len players rem 2 = 0;
 	
 operations
--- TODO Define operations here
-	public Championship : seq of Player ==> Championship
+	public Championship : seq of Player ==> Championship -- creates championship whith the given number of players
 		Championship (allPlayers) == (
 			numberOfGames := len allPlayers - 1;
 			
@@ -32,27 +25,27 @@ operations
 		)
 	pre len allPlayers > 1 and len players rem 2 = 0;
 
-	pure public GetNumberOfRounds : () ==> nat1
+	pure public GetNumberOfRounds : () ==> nat1 -- return the number of the championship's rounds
 		GetNumberOfRounds() == (
 			return numberOfRounds;
 		);
 
-	pure public GetPlayers : () ==> seq of Player
+	pure public GetPlayers : () ==> seq of Player -- return all champioship's players
 		GetPlayers() == (
 			return players;
 		);
 		
-	pure public GetCurrentPlayersOnChampionship : () ==> seq of Player
+	pure public GetCurrentPlayersOnChampionship : () ==> seq of Player -- return only the players still in championship
 		GetCurrentPlayersOnChampionship() == (
 			return currentPlayersInChampionship;
 		);
 		
-	pure public GetGames : () ==> seq of Game
+	pure public GetGames : () ==> seq of Game -- return all championship's games
 		GetGames() == (
 			return games;
 		);
 		
-	public AddGames : seq of Game ==> ()
+	public AddGames : seq of Game ==> () -- add games to championship
 		AddGames(finishedGames) == (
 			games := games^finishedGames;
 			
@@ -63,7 +56,7 @@ operations
 			
 		);
 	
-	public ShufflePlayers : seq of Player ==> seq of nat1
+	public ShufflePlayers : seq of Player ==> seq of nat1 -- shuffle a sequence of players to be picked by CreateGames
 		ShufflePlayers(sequenceOfPlayers) == (
 			dcl playerShuffled : int;
 			dcl selectedPlayers : seq of nat1 := [];
@@ -84,7 +77,7 @@ operations
 			return selectedPlayers
 		);
 		
-	public CreateGames : seq of Player ==> seq of Game
+	public CreateGames : seq of Player ==> seq of Game -- pick pairs of two players from the previous shuffled sequence of players
 		CreateGames(sequenceOfPlayers) == (
 			dcl playersOrder : seq of nat1 := ShufflePlayers(sequenceOfPlayers);
 			dcl generatedGames : seq of Game := [];
@@ -98,7 +91,7 @@ operations
 			return generatedGames;
 		);
 		
-	public PickAllWinnerPlayers : seq of Game ==> ()
+	public PickAllWinnerPlayers : seq of Game ==> () -- pick players of all games in a round of the championship
 		PickAllWinnerPlayers(finishedGames) == (
 			dcl winnerPlayers : seq of Player := [];
 			
@@ -109,7 +102,7 @@ operations
 			currentPlayersInChampionship := winnerPlayers;
 		);
 		
-	public PrintStats : () ==> ()
+	public PrintStats : () ==> () -- returns the number of moves the winner player made during the entire championship
 		PrintStats() == (
 			IO`print("\nThe winner of championship was ");
 			IO`print((hd GetCurrentPlayersOnChampionship()).GetName());
@@ -118,9 +111,4 @@ operations
 			IO`print(" moves.\n\n");
 		);
 
-functions
--- TODO Define functiones here
-
-traces
--- TODO Define Combinatorial Test Traces here
 end Championship
