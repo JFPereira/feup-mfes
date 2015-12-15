@@ -181,7 +181,7 @@ operations
 		-- make a full random game
 		public PlayRandomly : () ==> ()
 			PlayRandomly() == (
-				if len codeMaker.GetKey() = 0
+				if moves = 10
 					then
 						codeMaker.SetKey(Player`GenerateRandomlyKey());
 			

@@ -3,11 +3,11 @@ class Player -- represents the player of the game
 types
 	public String = seq of char;
 	public Key = seq of nat1
-	inv k == len k >= 0 and len k <= 4 and forall x in set elems k & (x > 0 and x < 7);
+	inv k == len k = 4 and forall x in set elems k & (x > 0 and x < 7);
 	
 instance variables
 	private name : String := [];
-	private key : Key := [];
+	private key : Key;
 	private numMoves : nat := 0;
 
 operations
