@@ -1,0 +1,334 @@
+\begin{vdmpp}[breaklines=true]
+class GameTests is subclass of MyTestCase -- represents the test suite
+
+operations
+
+ -- check if a key is correctly created
+(*@
+\label{testCreateKey:6}
+@*)
+ public testCreateKey : () ==> ()
+  testCreateKey() == (
+   dcl key : Player`Key := [1, 2, 3, 4];
+   
+   assertEqual([1, 2, 3, 4], key);
+   assertEqual(4, len key);
+   
+   for x in key do ( 
+    assertTrue(x >= 1 and x <= 6);
+   )
+  );
+  
+ -- check if a key is correctly created
+(*@
+\label{testCreateRandomlyKey:19}
+@*)
+ public testCreateRandomlyKey : () ==> ()
+  testCreateRandomlyKey() == (
+   dcl key : Player`Key := Player`GenerateRandomlyKey();
+   
+   assertEqual(4, len key);
+   for x in key do ( 
+    assertTrue(x >= 1 and x <= 6);
+   )
+  );
+  
+  -- check if a key can be created with five elements
+(*@
+\label{testCreateKeyWithMoreThanFourElems:30}
+@*)
+ public testCreateKeyWithMoreThanFourElems : () ==> ()
+  testCreateKeyWithMoreThanFourElems() == (
+   dcl key : Player`Key;
+   
+   key := [1, 2, 3, 4, 5];
+  );
+
+ -- checks if a default player is created with a certain key
+(*@
+\label{testPlayer:38}
+@*)
+ public testPlayer : () ==> ()
+  testPlayer() == (
+  dcl player: Player := new Player();
+  player.SetKey([1, 2, 3, 4]);
+  assertEqual([1, 2, 3, 4], player.GetKey());
+  assertEqual("Default", player.GetName());
+  );
+ 
+ -- checks if a player is created with a certain key
+(*@
+\label{testPlayerWithKey:47}
+@*)
+ public testPlayerWithKey : () ==> ()
+  testPlayerWithKey() == (
+  dcl player: Player := new Player("Cristo", [1, 2, 3, 4]);
+  assertEqual([1, 2, 3, 4], player.GetKey());
+  );
+  
+ -- check if the sequence returns a correct value
+(*@
+\label{testGameMove:54}
+@*)
+ public testGameMove : () ==> ()
+  testGameMove() == (
+   dcl codeMaker: Player := new Player("CodeMaker", [6, 6, 5, 2]);
+    dcl codeBreaker: Player := new Player("CodeBreaker");
+    dcl g: Game := new Game(codeMaker, codeBreaker);
+    
+    -- the result of the game initial moves is 10
+    assertEqual(10, g.GetCurrentMoves());
+    
+    -- code breaker makes the move [1, 1, 2, 2], and the expected result is (1, 0)
+    g.MakeMove([1, 1, 2, 2]);
+    assertEqual([1, 0], g.GetLastResult());
+  );
+  
+ -- check if a invalid move is rejected
+(*@
+\label{testInvalidGameMove:69}
+@*)
+ public testInvalidGameMove : () ==> ()
+  testInvalidGameMove() == (
+   dcl codeMaker: Player := new Player("CodeMaker", [6, 6, 5, 2]);
+    dcl codeBreaker: Player := new Player("CodeBreaker");
+    dcl g: Game := new Game(codeMaker, codeBreaker);
+    
+    -- the result of the game initial moves is 10
+    assertEqual(10, g.GetCurrentMoves());
+    
+    -- code breaker makes the move [1, 1, 7, 2], and it should be rejected
+    g.MakeMove([1, 1, 7, 2]);
+  );
+
+ -- simulates a game with the code breaker as the winner
+(*@
+\label{testGameWinnerCodeBreaker:83}
+@*)
+  public testGameWinnerCodeBreaker : () ==> ()
+   testGameWinnerCodeBreaker() == (
+    -- create game players
+    dcl codeMaker: Player := new Player("CodeMaker", [6, 6, 5, 2]);
+    dcl codeBreaker: Player := new Player("CodeBreaker");
+    
+    -- create game
+    dcl g: Game := new Game(codeMaker, codeBreaker);
+    
+    -- the result of the game initial moves is 10
+    assertEqual(10, g.GetCurrentMoves());
+    
+    -- code breaker makes the move [1, 1, 2, 2], and the expected result is (1, 0)
+    g.MakeMove([1, 1, 2, 2]);
+    assertEqual([1, 0], g.GetLastResult());
+    
+    -- code breaker makes the move [3, 3, 4, 4], and the expected result is (0, 0)
+    g.MakeMove([3, 3, 4, 4]);
+    assertEqual([0, 0], g.GetLastResult());
+    
+    -- code breaker makes the move [5, 5, 6, 6], and the expected result is (0, 3)
+    g.MakeMove([5, 5, 6, 6]);
+    assertEqual([0, 3], g.GetLastResult());
+    
+    -- code breaker makes the move [5, 6, 5, 2], and the expected result is (3, 0)
+    g.MakeMove([5, 6, 5, 2]);
+    assertEqual([3, 0], g.GetLastResult());
+    
+    -- code breaker makes the move [6, 6, 5, 2], the expected result is (4, 0) and he wins the game
+    g.MakeMove([6, 6, 5, 2]);
+    assertEqual([4, 0], g.GetLastResult());
+    
+    -- the winner was the code breaker
+    assertEqual("CodeBreaker", g.GetWinnerPlayer().GetName());
+    
+    IO`print("Winner is: ");
+    IO`println(g.GetWinnerPlayer().GetName());
+   );
+   
+   -- simulates a game with the code maker as the winner
+(*@
+\label{testGameWinnerCodeMaker:123}
+@*)
+   public testGameWinnerCodeMaker : () ==> ()
+   testGameWinnerCodeMaker() == (
+    -- create game players
+    dcl codeMaker: Player := new Player("CodeMaker", [1, 2, 4, 1]);
+    dcl codeBreaker: Player := new Player("CodeBreaker");
+    
+    -- create game
+    dcl g: Game := new Game(codeMaker, codeBreaker);
+    
+    -- the result of the game initial moves is 10
+    assertEqual(10, g.GetCurrentMoves());
+    
+    -- code breaker makes the move [1, 1, 2, 2], and the expected result is (1, 2)
+    g.MakeMove([1, 1, 2, 2]);
+    assertEqual([1, 2], g.GetLastResult());
+    
+    -- code breaker makes the move [3, 3, 4, 4], and the expected result is (1, 0)
+    g.MakeMove([3, 3, 4, 4]);
+    assertEqual([1, 0], g.GetLastResult());
+    
+    -- code breaker makes the move [5, 5, 6, 6], and the expected result is (0, 0)
+    g.MakeMove([5, 5, 6, 6]);
+    assertEqual([0, 0], g.GetLastResult());
+    
+    -- code breaker makes the move [2, 1, 3, 4], and the expected result is (0, 3)
+    g.MakeMove([2, 1, 3, 4]);
+    assertEqual([0, 3], g.GetLastResult());
+    
+    -- code breaker makes the move [1, 1, 1, 1], and the expected result is (2, 0)
+    g.MakeMove([1, 1, 1, 1]);
+    assertEqual([2, 0], g.GetLastResult());
+    
+    -- code breaker makes the move [2, 2, 2, 2], and the expected result is (1, 0)
+    g.MakeMove([2, 2, 2, 2]);
+    assertEqual([1, 0], g.GetLastResult());
+    
+    -- code breaker makes the move [1, 1, 3, 4], and the expected result is (1, 2)
+    g.MakeMove([1, 1, 3, 4]);
+    assertEqual([1, 2], g.GetLastResult());
+    
+    -- code breaker makes the move [2, 1, 3, 4], and the expected result is (0, 3)
+    g.MakeMove([2, 1, 3, 4]);
+    assertEqual([0, 3], g.GetLastResult());
+    
+    -- code breaker makes the move [1, 1, 2, 4], and the expected result is (1, 3)
+    g.MakeMove([1, 1, 2, 4]);
+    assertEqual([1, 3], g.GetLastResult());
+    
+    -- code breaker makes the move [1, 2, 1, 4], the expected result is (2, 2) and he wins the game
+    g.MakeMove([1, 2, 1, 4]);
+    assertEqual([2, 2], g.GetLastResult());
+    
+    -- the winner was the code breaker
+    assertEqual("CodeMaker", g.GetWinnerPlayer().GetName());
+    
+    IO`print("Winner is: ");
+    IO`println(g.GetWinnerPlayer().GetName());
+   );
+  
+  -- simulates a game with randomly moves
+(*@
+\label{testRandomlyGame:183}
+@*)
+  public testRandomlyGame : () ==> ()
+   testRandomlyGame() == (
+    dcl codeMaker: Player := new Player("CodeMaker", [1, 2, 4, 1]);
+    dcl codeBreaker: Player := new Player("CodeBreaker");
+    dcl g: Game := new Game(codeMaker, codeBreaker);
+    
+    -- the result of the game initial moves is 10
+    assertEqual(10, g.GetCurrentMoves());
+    
+    -- play the game with randomly moves
+    g.PlayRandomly();
+    
+    -- the game need to be finished
+    assertEqual(true, g.IsFinished());
+    
+    IO`print("Winner is: ");
+    IO`println(g.GetWinnerPlayer().GetName());
+   );
+  
+  -- simulates a championship, where four players play randomly 
+(*@
+\label{testChampionshipWithFourPlayers:203}
+@*)
+  public testChampionshipWithFourPlayers : () ==> ()
+   testChampionshipWithFourPlayers() == (
+    -- creating four players to the championship
+    dcl p1 : Player := new Player("Tito");
+    dcl p2 : Player := new Player("Cristina");
+    dcl p3 : Player := new Player("Jacinto");
+    dcl p4 : Player := new Player("Ana");
+    dcl games : seq of Game;
+    
+    -- creating a championship
+    dcl champ : Championship := new Championship([p1, p2, p3, p4]);
+    assertEqual(4, len champ.GetPlayers());
+    
+    -- run championship by rounds
+    for i = 1 to champ.GetNumberOfRounds() by 1 do (
+     -- creates a championship round with the selected players
+     games := champ.CreateGames(champ.GetCurrentPlayersOnChampionship());
+     if i = 1
+      then (
+       assertEqual(2, len games);
+      )
+     elseif i = 2
+      then (
+       assertEqual(1, len games);
+      );
+     
+     for j = 1 to len games by 1 do (
+      -- play games randomly
+      games(j).PlayRandomly();
+     );
+     
+     -- get all the winner players of the championship round
+     champ.PickAllWinnerPlayers(games);
+     
+     if i = 1
+      then (
+       assertEqual(2, len champ.GetCurrentPlayersOnChampionship());
+      )
+     elseif i = 2
+      then (
+       assertEqual(1, len champ.GetCurrentPlayersOnChampionship());
+      );
+     
+     for j = 1 to len champ.GetCurrentPlayersOnChampionship() by 1 do (
+      IO`print("Winner of Game ");
+      IO`print(j);
+      IO`print(" is: ");
+      IO`println(champ.GetCurrentPlayersOnChampionship()(j).GetName());
+     );
+     
+     -- adding games to the championship history
+     champ.AddGames(games);
+     
+    );
+     -- prints the total moves of the championship winner player 
+     champ.PrintStats();
+   );
+   
+  -- simulates a championship, where four players play randomly 
+(*@
+\label{testChampionshipWithOddNumberOfPlayers:262}
+@*)
+  public testChampionshipWithOddNumberOfPlayers : () ==> ()
+   testChampionshipWithOddNumberOfPlayers() == (
+    -- creating four players to the championship
+    dcl p1 : Player := new Player("Tito");
+    dcl p2 : Player := new Player("Cristina");
+    dcl p3 : Player := new Player("Jacinto");
+    dcl p4 : Player := new Player("Ana");
+    dcl p5 : Player := new Player("Antonio");
+    
+    dcl champ : Championship;
+    
+    -- creating a championship
+    champ := new Championship([p1, p2, p3, p4, p5]);
+   );
+  
+(*@
+\label{testAll:277}
+@*)
+  public testAll: () ==> ()
+  testAll() == (
+   --testCreateKey();
+   --testCreateRandomlyKey();
+   --testCreateKeyWithMoreThanFourElems();
+    --testPlayer();
+    --testPlayerWithKey();
+    --testGameMove();
+    --testInvalidGameMove();
+    --testGameWinnerCodeBreaker();
+    --testGameWinnerCodeMaker();
+    --testRandomlyGame();
+    --testChampionshipWithFourPlayers();
+    testChampionshipWithOddNumberOfPlayers();
+  );
+  
+end GameTests
+\end{vdmpp}

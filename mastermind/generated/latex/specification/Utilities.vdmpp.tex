@@ -1,0 +1,35 @@
+\begin{vdmpp}[breaklines=true]
+class Utilities -- class with some pratical function
+
+operations
+ -- returns the number of occurences of a value on a sequence
+(*@
+\label{Count:5}
+@*)
+ public static Count: seq of int * nat1 ==> nat
+  Count(key, elem) == (
+   dcl count : nat := 0;
+  
+   for e in key do
+    if e = elem
+     then
+      count := count + 1;
+      
+   return count;
+  );
+ 
+ -- returns the minimum between two values
+(*@
+\label{Min:18}
+@*)
+ public static Min: int * int ==> int
+  Min(a, b) == (
+   if a < b
+    then
+     return a;
+     
+   return b; 
+  );
+ 
+end Utilities
+\end{vdmpp}

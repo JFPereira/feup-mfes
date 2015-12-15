@@ -1,0 +1,240 @@
+\begin{vdmpp}[breaklines=true]
+class Game -- represents a game between two players
+
+types
+ public Result = seq of nat
+ inv r == len r = 2 and r(1) + r(2) <= 4;
+  
+instance variables
+ private moves : nat := 10;
+ private codeMaker: Player;
+ private codeBreaker: Player;
+ private makerResults : seq of Result := [];
+ private breakerMoves: seq of Player`Key := [];
+ private finished : bool := false;
+
+inv len makerResults = 10 - moves;
+inv finished => len makerResults > 0 and len makerResults < 11;
+inv forall i in set inds makerResults \ {len makerResults} & makerResults(i) <> [4, 0];
+        
+operations
+  -- constructor, initializes the game
+(*@
+\label{Game:21}
+@*)
+  public Game: Player * Player ==> Game
+   Game(codeMakerPlayer, codeBreakerPlayer) == (
+    codeMaker := codeMakerPlayer;
+    codeBreaker := codeBreakerPlayer;
+    return self
+   );
+   
+  -- get the current number of moves remaining
+(*@
+\label{GetCurrentMoves:29}
+@*)
+  pure public GetCurrentMoves : () ==> nat
+   GetCurrentMoves () == return moves;
+  
+  -- get the code maker final key
+(*@
+\label{GetFinalKey:33}
+@*)
+  pure public GetFinalKey : () ==> seq of int
+   GetFinalKey () == return codeMaker.GetKey();
+   
+  -- get the code maker player
+(*@
+\label{GetCodeMaker:37}
+@*)
+  pure public GetCodeMaker : () ==> Player
+   GetCodeMaker () == return codeMaker;
+   
+  -- get the code breaker player
+(*@
+\label{GetCodeBreaker:41}
+@*)
+  pure public GetCodeBreaker : () ==> Player
+   GetCodeBreaker () == return codeBreaker;
+   
+  -- return maker results
+(*@
+\label{GetMakerResults:45}
+@*)
+  pure public GetMakerResults : () ==> seq of Result
+   GetMakerResults () == return makerResults;
+  
+  -- return breaker moves 
+(*@
+\label{GetBreakerMoves:49}
+@*)
+  pure public GetBreakerMoves : () ==> seq of Player`Key
+   GetBreakerMoves () == return breakerMoves;
+  
+  -- get last result of the maker moves
+(*@
+\label{GetLastResult:53}
+@*)
+  pure public GetLastResult : () ==> Result
+   GetLastResult() == return makerResults(len makerResults);
+  
+  -- return the winner player 
+(*@
+\label{GetWinnerPlayer:57}
+@*)
+  pure public GetWinnerPlayer : () ==> Player
+   GetWinnerPlayer() == (
+    if GetLastResult() = [4, 0]
+     then
+      return codeBreaker
+    else
+     return codeMaker;
+   );
+   
+  -- tell if a game is finished or not
+(*@
+\label{IsFinished:67}
+@*)
+  pure public IsFinished : () ==> bool
+   IsFinished() == (
+    return finished;
+   );
+   
+  -- adds a new key to the set of the breaker moves and sets the current key of the breaker player
+(*@
+\label{AddKey:73}
+@*)
+  public AddKey : Player`Key ==> ()
+   AddKey (key) == (
+    codeBreaker.SetKey(key);
+    breakerMoves := breakerMoves^[key];
+   )
+  pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7)
+  post len breakerMoves = len breakerMoves~ + 1;
+  
+  -- checks the move of the breaker player
+(*@
+\label{CheckMove:82}
+@*)
+  private CheckMove : () ==> ()
+  CheckMove () == (
+   dcl e_corrects : nat := 0;
+   dcl e_exists : nat := 0;
+   dcl makerElemRep : nat := 0;
+   dcl breakerElemRep : nat := 0;
+   dcl sumMins : nat := 0;
+   dcl breakerKey : Player`Key := codeBreaker.GetKey();
+   dcl makerKey : Player`Key := codeMaker.GetKey();
+  
+   for i = 1 to len codeBreaker.GetKey() by 1 do (
+     if breakerKey(i) = makerKey(i)
+      then
+       e_corrects := e_corrects + 1;
+   );
+   
+   for i = 1 to 6 by 1 do (
+    makerElemRep := Utilities`Count(makerKey, i);
+    breakerElemRep := Utilities`Count(breakerKey, i);
+    sumMins := sumMins + Utilities`Min(makerElemRep, breakerElemRep);
+   );
+   
+   e_exists := sumMins - e_corrects;
+   
+   atomic (
+    moves := moves - 1;
+    makerResults := makerResults^[[e_corrects, e_exists]];
+    finished := e_corrects = 4
+   ); 
+  );
+   
+  -- print board
+(*@
+\label{PrintBoard:114}
+@*)
+  private PrintBoard : seq of Player`Key * seq of Result ==> ()
+   PrintBoard (breakerKeys, makerResponses) == (
+    dcl currentMove : nat := 10 - moves;
+   
+    IO`print("Board Game - Move: ");
+    IO`println(currentMove);
+    IO`println("MOVE                 RESULT [Corrects, Exists]");
+    
+    for i = len makerResponses to 1 by -1 do (
+     IO`print(breakerKeys(i));
+     IO`print("         ");
+     IO`println(makerResponses(i));
+    );
+    
+    IO`print("Moves Remaing: ");
+    IO`println(moves);
+    IO`print("\n");
+   );
+   
+  -- make a move
+(*@
+\label{MakeMove:134}
+@*)
+  public MakeMove : (Player`Key) ==> ()
+   MakeMove (key) == (
+   if moves > 0
+    then (
+     if not finished
+      then (
+       AddKey(key);
+       CheckMove();
+       
+       PrintBoard(breakerMoves, makerResults);
+       
+       if finished
+        then (
+         IO`print(codeBreaker.GetName());
+         IO`println(" won the game.");
+         IO`print("The key was ");
+         IO`print(codeBreaker.GetKey());
+         IO`print(" and the number of tries was ");
+         IO`print(len makerResults);
+         IO`println(".");
+         IO`print("\n");
+        )
+       elseif moves = 0 and not finished 
+        then (
+         finished := true;
+         IO`print(codeMaker.GetName());
+         IO`println(" won the game.");
+         IO`print("The key was ");
+         IO`print(GetFinalKey());
+         IO`print(" and the number of moves was ");
+         IO`print(len makerResults);
+         IO`println(".");
+         IO`print("\n");
+        );
+      )
+     else (
+      IO`println("The game is over.");
+      IO`print("\n");
+     )
+    )
+   else (
+    IO`println("The game is over.");
+    IO`print("\n");
+   )
+  )
+  pre len key > 0 and len key < 5 and forall x in set elems key & (x > 0 and x < 7);
+  
+  -- make a full random game
+(*@
+\label{PlayRandomly:182}
+@*)
+  public PlayRandomly : () ==> ()
+   PlayRandomly() == (
+    if moves = 10
+     then
+      codeMaker.SetKey(Player`GenerateRandomlyKey());
+   
+    while not finished do (
+     MakeMove(Player`GenerateRandomlyKey());
+    );
+   );
+   
+end Game
+\end{vdmpp}

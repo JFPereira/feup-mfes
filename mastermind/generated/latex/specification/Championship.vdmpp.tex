@@ -1,0 +1,154 @@
+\begin{vdmpp}[breaklines=true]
+class Championship -- represents championship 
+
+instance variables
+ private numberOfRounds : nat1;
+ private players : seq of Player := [];
+ private currentPlayersInChampionship : seq of Player;
+ private games : seq of Game;
+ 
+ -- only even number of players
+ inv len players rem 2 = 0;
+ 
+operations
+ -- creates championship whith the given number of players
+(*@
+\label{Championship:14}
+@*)
+ public Championship : seq of Player ==> Championship
+  Championship (allPlayers) == (
+   numberOfRounds := (MATH`log(len allPlayers) / MATH`log(2));
+ 
+   players := allPlayers;
+   currentPlayersInChampionship := allPlayers;
+   games := [];
+   
+   return self;
+  )
+ pre len allPlayers > 1 and len allPlayers rem 2 = 0;
+
+ -- return the number of the championship's rounds
+(*@
+\label{GetNumberOfRounds:27}
+@*)
+ pure public GetNumberOfRounds : () ==> nat1
+  GetNumberOfRounds() == (
+   return numberOfRounds;
+  );
+
+ -- return all champioship's players
+(*@
+\label{GetPlayers:33}
+@*)
+ pure public GetPlayers : () ==> seq of Player
+  GetPlayers() == (
+   return players;
+  );
+
+
+ -- return only the players still in championship
+(*@
+\label{GetCurrentPlayersOnChampionship:40}
+@*)
+ pure public GetCurrentPlayersOnChampionship : () ==> seq of Player
+  GetCurrentPlayersOnChampionship() == (
+   return currentPlayersInChampionship;
+  );
+ 
+ -- return all championship's games
+(*@
+\label{GetGames:46}
+@*)
+ pure public GetGames : () ==> seq of Game
+  GetGames() == (
+   return games;
+  );
+  
+ -- add games to championship
+(*@
+\label{AddGames:52}
+@*)
+ public AddGames : seq of Game ==> ()
+  AddGames(finishedGames) == (
+   games := games^finishedGames;
+   
+   for g in games do (
+    g.GetCodeMaker().SumMoves(len g.GetMakerResults());
+    g.GetCodeBreaker().SumMoves(len g.GetBreakerMoves());
+   );
+   
+  );
+ 
+ -- shuffle a sequence of players to be picked by CreateGames
+(*@
+\label{ShufflePlayers:64}
+@*)
+ public ShufflePlayers : seq of Player ==> seq of nat1
+  ShufflePlayers(sequenceOfPlayers) == (
+   dcl playerShuffled : int;
+   dcl selectedPlayers : seq of nat1 := [];
+   
+   for p in sequenceOfPlayers do (
+    if len selectedPlayers = 0
+     then
+      playerShuffled := MATH`rand(len sequenceOfPlayers) + 1
+    else (
+     while playerShuffled in set elems selectedPlayers and len selectedPlayers <> len sequenceOfPlayers do (
+      playerShuffled := MATH`rand(len sequenceOfPlayers) + 1;
+     );
+    );
+    
+    selectedPlayers := selectedPlayers^[playerShuffled];
+   );
+   
+   return selectedPlayers
+  );
+  
+ -- pick pairs of two players from the previous shuffled sequence of players
+(*@
+\label{CreateGames:86}
+@*)
+ public CreateGames : seq of Player ==> seq of Game
+  CreateGames(sequenceOfPlayers) == (
+   dcl playersOrder : seq of nat1 := ShufflePlayers(sequenceOfPlayers);
+   dcl generatedGames : seq of Game := [];
+   dcl game : Game;
+   
+   for i = 1 to len sequenceOfPlayers / 2 by 1 do (
+    game := new Game(sequenceOfPlayers(playersOrder((i * 2) - 1)), sequenceOfPlayers(playersOrder(i * 2))); 
+    generatedGames := generatedGames^[game];
+   );
+   
+   return generatedGames;
+  );
+  
+ -- pick players of all games in a round of the championship
+(*@
+\label{PickAllWinnerPlayers:101}
+@*)
+ public PickAllWinnerPlayers : seq of Game ==> ()
+  PickAllWinnerPlayers(finishedGames) == (
+   dcl winnerPlayers : seq of Player := [];
+   
+   for i = 1 to len finishedGames by 1 do (
+    winnerPlayers := winnerPlayers^[finishedGames(i).GetWinnerPlayer()];
+   );
+   
+   currentPlayersInChampionship := winnerPlayers;
+  );
+  
+ -- returns the number of moves the winner player made during the entire championship
+(*@
+\label{PrintStats:113}
+@*)
+ public PrintStats : () ==> ()
+  PrintStats() == (
+   IO`print("\nThe winner of championship was ");
+   IO`print((hd GetCurrentPlayersOnChampionship()).GetName());
+   IO`print(" and has made ");
+   IO`print((hd GetCurrentPlayersOnChampionship()).GetNumberOfMoves());
+   IO`print(" moves.\n\n");
+  );
+
+end Championship
+\end{vdmpp}
