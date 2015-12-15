@@ -24,7 +24,7 @@ operations
 			for x in key do ( 
 				assertTrue(x >= 1 and x <= 6);
 			)
-		);	
+		);
 
 	-- checks if a default player is created with a certain key
 	public testPlayer : () ==> ()
@@ -41,12 +41,44 @@ operations
 		dcl player: Player := new Player("Cristo", [1, 2, 3, 4]);
 		assertEqual([1, 2, 3, 4], player.GetKey());
 		);
+		
+	-- check if the sequence returns a correct value
+	public testGameMove : () ==> ()
+		testGameMove() == (
+			dcl codeMaker: Player := new Player("CodeMaker", [6, 6, 5, 2]);
+  		dcl codeBreaker: Player := new Player("CodeBreaker");
+  		dcl g: Game := new Game(codeMaker, codeBreaker);
+  		
+  		-- the result of the game initial moves is 10
+  		assertEqual(10, g.GetCurrentMoves());
+  		
+  		-- code breaker makes the move [1, 1, 2, 2], and the expected result is (1, 0)
+  		g.MakeMove([1, 1, 2, 2]);
+  		assertEqual([1, 0], g.GetLastResult());
+		);
+		
+	-- check if a invalid move is rejected
+	public testInvalidGameMove : () ==> ()
+		testInvalidGameMove() == (
+			dcl codeMaker: Player := new Player("CodeMaker", [6, 6, 5, 2]);
+  		dcl codeBreaker: Player := new Player("CodeBreaker");
+  		dcl g: Game := new Game(codeMaker, codeBreaker);
+  		
+  		-- the result of the game initial moves is 10
+  		assertEqual(10, g.GetCurrentMoves());
+  		
+  		-- code breaker makes the move [1, 1, 7, 2], and it should be rejected
+  		g.MakeMove([1, 1, 7, 2]);
+		);
 
 	-- simulates a game with the code breaker as the winner
   public testGameWinnerCodeBreaker : () ==> ()
   	testGameWinnerCodeBreaker() == (
+  		-- create game players
   		dcl codeMaker: Player := new Player("CodeMaker", [6, 6, 5, 2]);
   		dcl codeBreaker: Player := new Player("CodeBreaker");
+  		
+  		-- create game
   		dcl g: Game := new Game(codeMaker, codeBreaker);
   		
   		-- the result of the game initial moves is 10
@@ -82,8 +114,11 @@ operations
   	-- simulates a game with the code maker as the winner
   	public testGameWinnerCodeMaker : () ==> ()
   	testGameWinnerCodeMaker() == (
+  		-- create game players
   		dcl codeMaker: Player := new Player("CodeMaker", [1, 2, 4, 1]);
   		dcl codeBreaker: Player := new Player("CodeBreaker");
+  		
+  		-- create game
   		dcl g: Game := new Game(codeMaker, codeBreaker);
   		
   		-- the result of the game initial moves is 10
@@ -217,8 +252,12 @@ operations
   
   public testAll: () ==> ()
   testAll() == (
+  	testCreateKey();
+  	testCreateRandomlyKey();
     testPlayer();
     testPlayerWithKey();
+    testGameMove();
+    --testInvalidGameMove();
    	testGameWinnerCodeBreaker();
     testGameWinnerCodeMaker();
     testRandomlyGame();
