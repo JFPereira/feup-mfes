@@ -1,7 +1,6 @@
 class Championship -- represents championship 
 
 instance variables
-	private numberOfGames : nat1;
 	private numberOfRounds : nat1;
 	private players : seq of Player := [];
 	private currentPlayersInChampionship : seq of Player;
@@ -14,8 +13,6 @@ operations
 	-- creates championship whith the given number of players
 	public Championship : seq of Player ==> Championship
 		Championship (allPlayers) == (
-			numberOfGames := len allPlayers - 1;
-			
 			numberOfRounds := (MATH`log(len allPlayers) / MATH`log(2));
 	
 			players := allPlayers;
