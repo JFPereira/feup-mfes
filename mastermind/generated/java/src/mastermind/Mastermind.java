@@ -173,7 +173,7 @@ public class Mastermind {
 		int numberOfPlayers= Integer.parseInt(br.readLine());
 		
 		for(int i = 0; i < numberOfPlayers; i++) {
-			System.out.print("\n#Player " + (i + 1) +" insert your name: ");
+			System.out.print("\n#Player " + (i + 1) +", insert your name: ");
 			players.add(new Player(br.readLine()));
 		}
 		
@@ -183,16 +183,20 @@ public class Mastermind {
 			VDMSeq games = c.CreateGames(c.GetCurrentPlayersOnChampionship());
 			
 			for(int j = 0; j < games.size(); j++) {
+				Game g = (Game)games.get(j);
+				System.out.println("\nGame " + (j + 1) + " - " + g.GetCodeMaker().GetName() + " VS " + g.GetCodeBreaker().GetName());
 				playChampionshipGame((Game)games.get(j));
 			}
 			
 			c.PickAllWinnerPlayers(games);
 			c.AddGames(games);
 		}
+		
+		c.PrintStats();
 	}
 
 	private static void playChampionshipGame(Game game) throws IOException {
-		System.out.print("\n#" + game.GetCodeMaker().GetName() + ", insert your code (example: 1,1,1,1): ");
+		System.out.print("\n#" + game.GetCodeMaker().GetName() + ", you are the Code Maker! Please, insert your code (example: 1,1,1,1): ");
 		
 		game.GetCodeMaker().SetKey(convertStringToKey(br.readLine()));
 
