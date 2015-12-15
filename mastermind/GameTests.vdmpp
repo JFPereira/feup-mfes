@@ -172,8 +172,8 @@ operations
   		
   			champ.AddGames(games);
   			
-  			champ.PrintStats();
   		);
+  			champ.PrintStats();
   	);
   
   public testAll: () ==> ()

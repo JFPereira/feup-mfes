@@ -50,6 +50,7 @@ public class Mastermind {
 
 		case 4:
 			ShowCredits();
+			break;
 
 		default:
 			System.err.println("Invalid option! Exiting...");
@@ -127,7 +128,7 @@ public class Mastermind {
 
 		System.out.print("\n\n");
 		
-		System.out.println("Press Any Key To Continue...");
+		System.out.println("Press Enter To Return To Start Menu...");
         new Scanner(System.in).nextLine();
 
 		startMenu();
@@ -158,15 +159,46 @@ public class Mastermind {
 
 		System.out.print("\n\n");
 
-		System.out.println("Press Any Key To Continue...");
+		System.out.println("Press Enter To Return To Start Menu...");
         new Scanner(System.in).nextLine();
 		
 		startMenu();
 	}
 
-	private static void BuildAChampionshipOption() {
-		// TODO Auto-generated method stub
+	@SuppressWarnings("unchecked")
+	private static void BuildAChampionshipOption() throws NumberFormatException, IOException {
+		VDMSeq players = new VDMSeq();
+		
+		System.out.print("\n#Insert an even number of players: ");
+		int numberOfPlayers= Integer.parseInt(br.readLine());
+		
+		for(int i = 0; i < numberOfPlayers; i++) {
+			System.out.print("\n#Player " + (i + 1) +" insert your name: ");
+			players.add(new Player(br.readLine()));
+		}
+		
+		Championship c = new Championship(players);
+		
+		for(int i = 0; i < c.GetNumberOfRounds().intValue(); i++) {
+			VDMSeq games = c.CreateGames(c.GetCurrentPlayersOnChampionship());
+			
+			for(int j = 0; j < games.size(); j++) {
+				playChampionshipGame((Game)games.get(j));
+			}
+			
+			c.PickAllWinnerPlayers(games);
+			c.AddGames(games);
+		}
+	}
 
+	private static void playChampionshipGame(Game game) throws IOException {
+		System.out.print("\n#" + game.GetCodeMaker().GetName() + ", insert your code (example: 1,1,1,1): ");
+		
+		game.GetCodeMaker().SetKey(convertStringToKey(br.readLine()));
+
+		System.out.print("\n#Let the game begins !\n\n");
+		
+		runGame(game);
 	}
 
 	private static void runGame(Game game) throws IOException {
@@ -192,12 +224,20 @@ public class Mastermind {
 	}
 
 	private static void ShowHelp() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
-	private static void ShowCredits() {
-		// TODO Auto-generated method stub
-
+	@SuppressWarnings("resource")
+	private static void ShowCredits() throws IOException {
+		System.out.println("\nThis project was developed by ");
+		System.out.println("\tHenrique Ferrolho");
+		System.out.println("\tJoao Pereira");
+		System.out.println("\tMario Macedo");
+		System.out.println("using VDM++ on Overture IDE and later generated to JAVA.\n");
+		
+		System.out.println("Press Enter To Return To Start Menu...");
+        new Scanner(System.in).nextLine();
+        
+        startMenu();
 	}
 }
