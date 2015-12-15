@@ -11,7 +11,8 @@ instance variables
 	inv len players rem 2 = 0;
 	
 operations
-	public Championship : seq of Player ==> Championship -- creates championship whith the given number of players
+	-- creates championship whith the given number of players
+	public Championship : seq of Player ==> Championship
 		Championship (allPlayers) == (
 			numberOfGames := len allPlayers - 1;
 			
@@ -25,27 +26,33 @@ operations
 		)
 	pre len allPlayers > 1 and len players rem 2 = 0;
 
-	pure public GetNumberOfRounds : () ==> nat1 -- return the number of the championship's rounds
+	-- return the number of the championship's rounds
+	pure public GetNumberOfRounds : () ==> nat1
 		GetNumberOfRounds() == (
 			return numberOfRounds;
 		);
 
-	pure public GetPlayers : () ==> seq of Player -- return all champioship's players
+	-- return all champioship's players
+	pure public GetPlayers : () ==> seq of Player
 		GetPlayers() == (
 			return players;
 		);
-		
-	pure public GetCurrentPlayersOnChampionship : () ==> seq of Player -- return only the players still in championship
+
+
+	-- return only the players still in championship
+	pure public GetCurrentPlayersOnChampionship : () ==> seq of Player
 		GetCurrentPlayersOnChampionship() == (
 			return currentPlayersInChampionship;
 		);
-		
-	pure public GetGames : () ==> seq of Game -- return all championship's games
+	
+	-- return all championship's games
+	pure public GetGames : () ==> seq of Game
 		GetGames() == (
 			return games;
 		);
 		
-	public AddGames : seq of Game ==> () -- add games to championship
+	-- add games to championship
+	public AddGames : seq of Game ==> ()
 		AddGames(finishedGames) == (
 			games := games^finishedGames;
 			
@@ -56,7 +63,8 @@ operations
 			
 		);
 	
-	public ShufflePlayers : seq of Player ==> seq of nat1 -- shuffle a sequence of players to be picked by CreateGames
+	-- shuffle a sequence of players to be picked by CreateGames
+	public ShufflePlayers : seq of Player ==> seq of nat1
 		ShufflePlayers(sequenceOfPlayers) == (
 			dcl playerShuffled : int;
 			dcl selectedPlayers : seq of nat1 := [];
@@ -77,7 +85,8 @@ operations
 			return selectedPlayers
 		);
 		
-	public CreateGames : seq of Player ==> seq of Game -- pick pairs of two players from the previous shuffled sequence of players
+	-- pick pairs of two players from the previous shuffled sequence of players
+	public CreateGames : seq of Player ==> seq of Game
 		CreateGames(sequenceOfPlayers) == (
 			dcl playersOrder : seq of nat1 := ShufflePlayers(sequenceOfPlayers);
 			dcl generatedGames : seq of Game := [];
@@ -91,7 +100,8 @@ operations
 			return generatedGames;
 		);
 		
-	public PickAllWinnerPlayers : seq of Game ==> () -- pick players of all games in a round of the championship
+	-- pick players of all games in a round of the championship
+	public PickAllWinnerPlayers : seq of Game ==> ()
 		PickAllWinnerPlayers(finishedGames) == (
 			dcl winnerPlayers : seq of Player := [];
 			
@@ -102,7 +112,8 @@ operations
 			currentPlayersInChampionship := winnerPlayers;
 		);
 		
-	public PrintStats : () ==> () -- returns the number of moves the winner player made during the entire championship
+	-- returns the number of moves the winner player made during the entire championship
+	public PrintStats : () ==> ()
 		PrintStats() == (
 			IO`print("\nThe winner of championship was ");
 			IO`print((hd GetCurrentPlayersOnChampionship()).GetName());
