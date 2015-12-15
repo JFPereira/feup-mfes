@@ -258,7 +258,7 @@ operations
   			champ.PrintStats();
   	);
   	
-  -- simulates a championship, where four players play randomly 
+  -- simulates a championship with an odd number of players
   public testChampionshipWithOddNumberOfPlayers : () ==> ()
   	testChampionshipWithOddNumberOfPlayers() == (
   		-- creating four players to the championship
