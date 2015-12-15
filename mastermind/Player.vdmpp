@@ -1,4 +1,4 @@
-class Player
+class Player -- represents the player of the game
 
 types
 	public String = seq of char;

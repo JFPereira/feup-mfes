@@ -1,12 +1,7 @@
-class Utilities
-types
--- TODO Define types here
-values
--- TODO Define values here
-instance variables
--- TODO Define instance variables here
+class Utilities -- class with some pratical function
+
 operations
--- TODO Define operations here
+	-- returns the number of occurences of a value on a sequence
 	public static Count: seq of int * nat1 ==> nat
 		Count(key, elem) == (
 			dcl count : nat := 0;
@@ -18,7 +13,8 @@ operations
 						
 			return count;
 		);
-		
+	
+	-- returns the minimum between two values
 	public static Min: int * int ==> int
 		Min(a, b) == (
 			if a < b
@@ -28,8 +24,4 @@ operations
 			return b; 
 		);
 	
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end Utilities
