@@ -276,18 +276,18 @@ operations
   
   public testAll: () ==> ()
   testAll() == (
-  	--testCreateKey();
-  	--testCreateRandomlyKey();
+  	testCreateKey();
+  	testCreateRandomlyKey();
   	--testCreateKeyWithMoreThanFourElems();
-    --testPlayer();
-    --testPlayerWithKey();
-    --testGameMove();
-    --testInvalidGameMove();
-   	--testGameWinnerCodeBreaker();
-    --testGameWinnerCodeMaker();
-    --testRandomlyGame();
-    --testChampionshipWithFourPlayers();
-    testChampionshipWithOddNumberOfPlayers();
+    testPlayer();
+    testPlayerWithKey();
+    testGameMove();
+    testInvalidGameMove();
+   	testGameWinnerCodeBreaker();
+    testGameWinnerCodeMaker();
+    testRandomlyGame();
+    testChampionshipWithFourPlayers();
+    --testChampionshipWithOddNumberOfPlayers();
   );
   
 end GameTests
